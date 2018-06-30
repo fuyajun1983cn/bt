@@ -3,19 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to L2CAP's documentation!
-================================
+L2CAP Learning Notes
+====================
+
+Table of Contents
+-----------------
+
+ .. note ::
+
+   This docuemnets is still in development stage, ont finished yet.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
 
+   spec/index.rst
+   code/index.rst
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-* L2CAP

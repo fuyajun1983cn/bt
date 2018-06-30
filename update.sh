@@ -7,6 +7,6 @@ rm -rvf _sources
 cd source
 make html
 cd ..
-mv html/* ./
+cp -rvf html/* ./
 rm -rvf doctrees
 rm -rvf html

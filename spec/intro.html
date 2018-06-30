@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; L2CAP 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="General Operation" href="operation.html" />
+    <link rel="prev" title="L2CAP Spec Digging" href="index.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> L2CAP
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">L2CAP Spec Digging</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operation.html">General Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data Packet Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#connection-oriented-channels-in-basic-l2cap-mode">CONNECTION-ORIENTED CHANNELS IN BASIC L2CAP MODE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#connectionless-data-channel-in-basic-l2cap-mode">CONNECTIONLESS DATA CHANNEL IN BASIC L2CAP MODE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#connection-oriented-channel-in-retransmission-flow-control-streaming-modes">CONNECTION-ORIENTED CHANNEL IN RETRANSMISSION/FLOW CONTROL/STREAMING MODES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#connection-oriented-channels-in-le-credit-based-flow-control-mode">CONNECTION-ORIENTED CHANNELS IN LE CREDIT BASED FLOW CONTROL MODE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signaling.html">Signaling Packet Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Configuration Parameter Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../code/index.html">Code Architecture Analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">L2CAP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">L2CAP Spec Digging</a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/spec/intro.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>The <em>Logical Link Control and Adaptation Layer Protocol</em>, referred to as <strong>L2CAP</strong>. <strong>L2CAP</strong> provides connectionoriented
+and connectionless data services to upper layer protocols with protocol multiplexing capability and segmentation
+and reassembly</p>
+<div class="section" id="l2cap-features">
+<h2>L2CAP FEATURES<a class="headerlink" href="#l2cap-features" title="Permalink to this headline">¶</a></h2>
+<p>The functional requirements for L2CAP include:</p>
+<blockquote>
+<div><ul class="simple">
+<li>protocol/channel multiplexing</li>
+<li>segmentation and reassembly (SAR)</li>
+<li>per-channel flow control</li>
+<li>error control</li>
+</ul>
+</div></blockquote>
+<p><strong>L2CAP architectural blocks</strong></p>
+<img alt="../_images/l2cap_blocks.png" src="../_images/l2cap_blocks.png" />
+<ul>
+<li><p class="first"><strong>Channel Manager</strong>
+provides the control plane functionality and is responsible for all internal signaling, L2CAP peer-to-peer signaling and signaling with higher and lower layers.</p>
+</li>
+<li><p class="first"><strong>Resource Manager</strong>
+responsible for providing a frame relay service to the Channel Manager, the Retransmission and Flow Control block and those application data streams that do not require Retransmission and Flow Control services.</p>
+<p>It is responsible for coordinating the transmission and reception of packets related to multiple L2CAP channels over the facilities offered at the lower layer interface.</p>
+<ul class="simple">
+<li><strong>Retransmission and Flow Control</strong>
+provides per-channel flow control and error recovery using packet retransmission.</li>
+</ul>
+</li>
+</ul>
+<div class="section" id="protocol-channel-multiplexing">
+<h3>Protocol/channel multiplexing<a class="headerlink" href="#protocol-channel-multiplexing" title="Permalink to this headline">¶</a></h3>
+<p>L2CAP supports multiplexing over individual Controllers and across multiple
+Controllers. <strong>An L2CAP channel shall operate over one Controller at a time</strong>.</p>
+<p>During channel setup, <em>protocol multiplexing</em> capability is used to route the
+connection to the correct upper layer protocol.</p>
+<p>For data transfer, <em>logical channel multiplexing</em> is needed to distinguish
+between multiple upper layer entities. There may be more than one upper
+layer entity using the same protocol.</p>
+</div>
+<div class="section" id="segmentation-and-reassembly">
+<h3>Segmentation and reassembly<a class="headerlink" href="#segmentation-and-reassembly" title="Permalink to this headline">¶</a></h3>
+<p>With the frame relay service offered by the Resource Manager, the length of
+transport frames is controlled by the individual applications running over
+L2CAP. Many multiplexed applications are better served if L2CAP has
+control over the PDU length.</p>
+</div>
+<div class="section" id="flow-control-per-l2cap-channel">
+<h3>Flow control per L2CAP channel<a class="headerlink" href="#flow-control-per-l2cap-channel" title="Permalink to this headline">¶</a></h3>
+<p>Controllers provide error and flow control for data going over the air and HCI
+flow control exists for data going over an HCI transport. When several data
+streams run over the same Controller using separate L2CAP channels, each
+channel requires individual flow control. A window based flow control
+scheme is provided.</p>
+</div>
+<div class="section" id="error-control-and-retransmissions">
+<h3>Error control and retransmissions<a class="headerlink" href="#error-control-and-retransmissions" title="Permalink to this headline">¶</a></h3>
+<p>When L2CAP channels are moved from one Controller to another data can
+be lost. Also, some applications require a residual error rate much smaller
+than some Controllers can deliver. L2CAP provides error checks and
+retransmissions of L2CAP PDUs.</p>
+<p>The error checking in L2CAP protects
+against errors due to Controllers falsely accepting packets that contain
+errors but pass Controller-based integrity checks. L2CAP error checking and
+retransmission also protect against loss of packets due to flushing by the
+Controller.</p>
+<p>The error control works in conjunction with flow control in the
+sense that the flow control mechanism will throttle retransmissions as well
+as first transmissions.</p>
+</div>
+<div class="section" id="support-for-streaming">
+<h3>Support for Streaming<a class="headerlink" href="#support-for-streaming" title="Permalink to this headline">¶</a></h3>
+<p>Streaming applications such as audio set up an L2CAP channel with an
+agreed-upon data rate and do not want flow control mechanisms, including
+those in the Controller, to alter the flow of data. A <strong>flush timeout</strong> is used to
+keep data flowing on the transmit side. Streaming mode is used to stop HCI
+and Controller based flow control from being applied on the receiving side.</p>
+</div>
+<div class="section" id="fragmentation-and-recombination">
+<h3>Fragmentation and Recombination<a class="headerlink" href="#fragmentation-and-recombination" title="Permalink to this headline">¶</a></h3>
+<p>Some Controllers may have limited transmission capabilities and may
+require fragment sizes different from those created by L2CAP segmentation.
+Therefore layers below L2CAP may further fragment and recombine L2CAP
+PDUs to create fragments which fit each layer’s capabilities. During
+transmission of an L2CAP PDU, many different levels of fragmentation and
+recombination may occur in both peer devices.</p>
+<p>Each layer of the protocol stack may pass on different sized fragments of
+L2CAP PDUs, and the size of fragments created by a layer may be different
+in each peer device. However the PDU is fragmented within the stack, the
+receiving L2CAP entity still recombines the fragments to obtain the original
+L2CAP PDU.</p>
+</div>
+<div class="section" id="quality-of-service">
+<h3>Quality of Service<a class="headerlink" href="#quality-of-service" title="Permalink to this headline">¶</a></h3>
+<p>The L2CAP connection establishment process allows the exchange of
+information regarding the quality of service (QoS) expected between two
+Bluetooth devices. Each L2CAP implementation monitors the resources
+used by the protocol and ensures that QoS contracts are honored.</p>
+<p>For a BR/EDR or BR/EDR/LE Controller, L2CAP may support both
+isochronous (Guaranteed) and asynchronous (Best Effort) data flows over
+the same ACL logical link by marking packets as automatically-flushable or
+non-automatically-flushable by setting the appropriate value for the
+<strong>Packet_Boundary_Flag</strong> in the HCI ACL Data Packet.</p>
+<p>Automatically-flushable L2CAP packets are flushed
+according to the automatic flush timeout set for the ACL logical link on which
+the L2CAP channels are mapped. Nonautomatically-flushable L2CAP packets are not affected by the automatic
+flush timeout and will not be flushed. All L2CAP packets can be flushed by
+using the HCI Flush command.</p>
+</div>
+</div>
+<div class="section" id="assumptions">
+<h2>ASSUMPTIONS<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
+<p>The protocol is designed based on the following assumptions:</p>
+<ul class="simple">
+<li>Controllers provide orderly delivery of data packets, For devices with a BR/EDR or BR/EDR/LE Controller,
+no more than one ACL-U logical link exists between any two devices. For devices with a
+BR/EDR/LE or LE Controller, no more than one LE-U logical link exists
+between any two devices.</li>
+<li>Controllers always provide the impression of full-duplex communication channels.</li>
+<li>The L2CAP layer provides a channel with a degree of reliability based on the
+mechanisms available in Controllers and with additional packet
+segmentation, error detection, and retransmission that can be enabled in the
+enhanced L2CAP layer.</li>
+<li>Controllers provide error and flow control for data going over the air and HCI
+flow control exists for data going over an HCI transport but some applications will want better error control than some Controllers provide.</li>
+</ul>
+</div>
+<div class="section" id="scope">
+<h2>SCOPE<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
+<p>The following features are outside the scope of L2CAP’s responsibilities:</p>
+<ul class="simple">
+<li>L2CAP does not transport synchronous data designated for SCO or eSCO logical transports.</li>
+<li>L2CAP does not support a reliable broadcast channel.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="operation.html" class="btn btn-neutral float-right" title="General Operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="L2CAP Spec Digging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
