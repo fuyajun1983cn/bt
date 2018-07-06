@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>L2CAP Main Data Structures &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Code Architecture Analysis" href="index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../spec/index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Code Architecture Analysis</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">Code Architecture Analysis</a> &raquo;</li>
+        
+      <li>L2CAP Main Data Structures</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/code/data-structure.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="l2cap-main-data-structures">
+<h1>L2CAP Main Data Structures<a class="headerlink" href="#l2cap-main-data-structures" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="l2cap-main-data-structure">
+<h2>L2CAP Main Data Structure<a class="headerlink" href="#l2cap-main-data-structure" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/2018070601.png" src="../../_images/2018070601.png" />
+</div>
+<div class="section" id="tl2c-cb">
+<h2>tL2C_CB<a class="headerlink" href="#tl2c-cb" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the L2CAP control structure</span>
+<span class="cm">*/</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">l2cap_trace_level</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">controller_xmit_window</span><span class="p">;</span> <span class="cm">/* Total ACL window for all links */</span>
+
+  <span class="kt">uint16_t</span> <span class="n">round_robin_quota</span><span class="p">;</span>   <span class="cm">/* Round-robin link quota */</span>
+  <span class="kt">uint16_t</span> <span class="n">round_robin_unacked</span><span class="p">;</span> <span class="cm">/* Round-robin unacked */</span>
+  <span class="kt">bool</span> <span class="n">check_round_robin</span><span class="p">;</span>       <span class="cm">/* Do a round robin check */</span>
+
+  <span class="kt">bool</span> <span class="n">is_cong_cback_context</span><span class="p">;</span>
+
+  <span class="n">tL2C_LCB</span> <span class="n">lcb_pool</span><span class="p">[</span><span class="n">MAX_L2CAP_LINKS</span><span class="p">];</span>    <span class="cm">/* Link Control Block pool */</span>
+  <span class="n">tL2C_CCB</span> <span class="n">ccb_pool</span><span class="p">[</span><span class="n">MAX_L2CAP_CHANNELS</span><span class="p">];</span> <span class="cm">/* Channel Control Block pool */</span>
+  <span class="n">tL2C_RCB</span> <span class="n">rcb_pool</span><span class="p">[</span><span class="n">MAX_L2CAP_CLIENTS</span><span class="p">];</span>  <span class="cm">/* Registration info pool */</span>
+
+  <span class="n">tL2C_CCB</span><span class="o">*</span> <span class="n">p_free_ccb_first</span><span class="p">;</span> <span class="cm">/* Pointer to first free CCB */</span>
+  <span class="n">tL2C_CCB</span><span class="o">*</span> <span class="n">p_free_ccb_last</span><span class="p">;</span>  <span class="cm">/* Pointer to last  free CCB */</span>
+
+  <span class="kt">uint8_t</span>
+      <span class="n">desire_role</span><span class="p">;</span> <span class="cm">/* desire to be master/slave when accepting a connection */</span>
+  <span class="kt">bool</span> <span class="n">disallow_switch</span><span class="p">;</span>     <span class="cm">/* false, to allow switch at create conn */</span>
+  <span class="kt">uint16_t</span> <span class="n">num_lm_acl_bufs</span><span class="p">;</span> <span class="cm">/* # of ACL buffers on controller */</span>
+  <span class="kt">uint16_t</span> <span class="n">idle_timeout</span><span class="p">;</span>    <span class="cm">/* Idle timeout */</span>
+
+  <span class="n">list_t</span><span class="o">*</span> <span class="n">rcv_pending_q</span><span class="p">;</span>       <span class="cm">/* Recv pending queue */</span>
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">receive_hold_timer</span><span class="p">;</span> <span class="cm">/* Timer entry for rcv hold */</span>
+
+  <span class="n">tL2C_LCB</span><span class="o">*</span> <span class="n">p_cur_hcit_lcb</span><span class="p">;</span>  <span class="cm">/* Current HCI Transport buffer */</span>
+  <span class="kt">uint16_t</span> <span class="n">num_links_active</span><span class="p">;</span> <span class="cm">/* Number of links active */</span>
+
+<span class="cp">#if (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE)</span>
+  <span class="kt">uint16_t</span> <span class="n">non_flushable_pbf</span><span class="p">;</span> <span class="cm">/* L2CAP_PKT_START_NON_FLUSHABLE if controller</span>
+<span class="cm">                                 supports */</span>
+  <span class="cm">/* Otherwise, L2CAP_PKT_START */</span>
+  <span class="kt">bool</span> <span class="n">is_flush_active</span><span class="p">;</span> <span class="cm">/* true if an HCI_Enhanced_Flush has been sent */</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if (L2CAP_CONFORMANCE_TESTING == TRUE)</span>
+  <span class="kt">uint32_t</span> <span class="n">test_info_resp</span><span class="p">;</span> <span class="cm">/* Conformance testing needs a dynamic response */</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if (L2CAP_NUM_FIXED_CHNLS &gt; 0)</span>
+  <span class="n">tL2CAP_FIXED_CHNL_REG</span>
+      <span class="n">fixed_reg</span><span class="p">[</span><span class="n">L2CAP_NUM_FIXED_CHNLS</span><span class="p">];</span> <span class="cm">/* Reg info for fixed channels */</span>
+<span class="cp">#endif</span>
+
+  <span class="kt">uint16_t</span> <span class="n">num_ble_links_active</span><span class="p">;</span> <span class="cm">/* Number of LE links active */</span>
+  <span class="kt">bool</span> <span class="n">is_ble_connecting</span><span class="p">;</span>
+  <span class="n">RawAddress</span> <span class="n">ble_connecting_bda</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">controller_le_xmit_window</span><span class="p">;</span> <span class="cm">/* Total ACL window for all links */</span>
+  <span class="n">tL2C_BLE_FIXED_CHNLS_MASK</span> <span class="n">l2c_ble_fixed_chnls_mask</span><span class="p">;</span>  <span class="c1">// LE fixed channels mask</span>
+  <span class="kt">uint16_t</span> <span class="n">num_lm_ble_bufs</span><span class="p">;</span>         <span class="cm">/* # of ACL buffers on controller */</span>
+  <span class="kt">uint16_t</span> <span class="n">ble_round_robin_quota</span><span class="p">;</span>   <span class="cm">/* Round-robin link quota */</span>
+  <span class="kt">uint16_t</span> <span class="n">ble_round_robin_unacked</span><span class="p">;</span> <span class="cm">/* Round-robin unacked */</span>
+  <span class="kt">bool</span> <span class="n">ble_check_round_robin</span><span class="p">;</span>       <span class="cm">/* Do a round robin check */</span>
+  <span class="n">tL2C_RCB</span> <span class="n">ble_rcb_pool</span><span class="p">[</span><span class="n">BLE_MAX_L2CAP_CLIENTS</span><span class="p">];</span> <span class="cm">/* Registration info pool */</span>
+
+  <span class="n">tL2CA_ECHO_DATA_CB</span><span class="o">*</span> <span class="n">p_echo_data_cb</span><span class="p">;</span> <span class="cm">/* Echo data callback */</span>
+
+<span class="cp">#if (L2CAP_HIGH_PRI_CHAN_QUOTA_IS_CONFIGURABLE == TRUE)</span>
+  <span class="kt">uint16_t</span> <span class="n">high_pri_min_xmit_quota</span><span class="p">;</span> <span class="cm">/* Minimum number of ACL credit for high</span>
+<span class="cm">                                       priority link */</span>
+<span class="cp">#endif </span><span class="cm">/* (L2CAP_HIGH_PRI_CHAN_QUOTA_IS_CONFIGURABLE == TRUE) */</span><span class="cp"></span>
+
+  <span class="kt">uint16_t</span> <span class="n">dyn_psm</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">tL2C_CB</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first">l2cap_trace_level</p>
+<p>log debug level.  use <cite>L2CA_SetTraceLevel</cite> to set it’s value,
+in <cite>l2c_init1</cite>, the default value is set as follows:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#if defined(L2CAP_INITIAL_TRACE_LEVEL)</span>
+  <span class="n">l2cb</span><span class="p">.</span><span class="n">l2cap_trace_level</span> <span class="o">=</span> <span class="n">L2CAP_INITIAL_TRACE_LEVEL</span><span class="p">;</span>
+<span class="cp">#else</span>
+  <span class="n">l2cb</span><span class="p">.</span><span class="n">l2cap_trace_level</span> <span class="o">=</span> <span class="n">BT_TRACE_LEVEL_NONE</span><span class="p">;</span> <span class="cm">/* No traces */</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Code Architecture Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

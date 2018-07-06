@@ -20,7 +20,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'L2CAP'
+project = 'bluetooth'
 copyright = '2018, Jackson Fu'
 author = 'Jackson Fu'
 
@@ -107,7 +107,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'L2CAPdoc'
+htmlhelp_basename = 'bluetoothdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -134,7 +134,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'L2CAP.tex', 'L2CAP Documentation',
+    (master_doc, 'bluetooth.tex', 'bluetooth Documentation',
      'Jackson Fu', 'manual'),
 ]
 
@@ -144,7 +144,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'L2CAP', 'L2CAP Documentation',
+    (master_doc, 'bluetooth', 'bluetooth Documentation',
      [author], 1)
 ]
 
@@ -155,8 +155,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'L2CAP', 'L2CAP Documentation',
-     author, 'L2CAP', 'L2CAP Learning Notes.',
+    (master_doc, 'bluetooth', 'bluetooth Documentation',
+     author, 'bluetooth', 'bluetooth Learning Notes.',
      'Miscellaneous'),
 ]
 

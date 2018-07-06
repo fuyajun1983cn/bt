@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GENERAL PROCEDURES &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>GENERAL PROCEDURES</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/general-process.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-procedures">
+<h1>GENERAL PROCEDURES<a class="headerlink" href="#general-procedures" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-process">
+<h2>CONFIGURATION PROCESS<a class="headerlink" href="#configuration-process" title="Permalink to this headline">¶</a></h2>
+<p>Configuration consists of two processes, the Standard process and the
+Lockstep process. The Lockstep process shall be used if both L2CAP entities
+support the Extended Flow Specification option otherwise the Standard
+process shall be used.</p>
+<p>For both processes, configuring the channel parameters shall be done
+independently for both directions. Both configurations may be done in parallel.</p>
+<p>two sides will sennd configuration request/response independently.</p>
+<p>If a device needs to establish the value of a configuration parameter the remote
+device will accept, then it must wait for a configuration request containing that
+configuration parameter to be sent from the remote device.</p>
+<p>If an L2CAP entity receives a Configuration Request while it is waiting for a response it shall not
+block sending the Configuration Response, otherwise the configuration
+process may deadlock.</p>
+<div class="section" id="standard-configuration-process">
+<h3>Standard Configuration Process<a class="headerlink" href="#standard-configuration-process" title="Permalink to this headline">¶</a></h3>
+<p>For the Standard process the following general procedure shall be used for
+each direction:</p>
+<ol class="arabic simple">
+<li>Local device informs the remote device of the parameters that the local
+device will accept using a Configuration Request.</li>
+<li>Remote device responds, agreeing or disagreeing with these values,
+including the default ones, using a Configuration Response.</li>
+<li>The local and remote devices repeat steps (1) and (2) until agreement on all
+parameters is reached.</li>
+</ol>
+<p>The decision on the amount of time (or messages) spent configuring the
+channel parameters before terminating the configuration is left to the
+implementation, but it shall not last more than <code class="docutils literal notranslate"><span class="pre">120</span></code> seconds.</p>
+</div>
+</div>
+<div class="section" id="operation-collision-resolution">
+<h2>OPERATION COLLISION RESOLUTION<a class="headerlink" href="#operation-collision-resolution" title="Permalink to this headline">¶</a></h2>
+<p>When two devices request the same operation by sending a request packet
+with the same code, a collision can occur. Some operations require collision
+resolution.The following algorithm shall be used by both devices to determine
+which request to reject.</p>
+<ol class="arabic simple">
+<li>Set i=0 (representing the least significant octet of the BD_ADDR).</li>
+<li>Compare the octet[i] of the BD_ADDR of both devices. If the octets
+are not equal go to step 4.</li>
+<li>Increment i by 1. Go to step 2.</li>
+<li>The device with the larger BD_ADDR octet shall reject the request
+from the other device.</li>
+</ol>
+</div>
+<div class="section" id="prioritizing-data-over-hci">
+<h2>PRIORITIZING DATA OVER HCI<a class="headerlink" href="#prioritizing-data-over-hci" title="Permalink to this headline">¶</a></h2>
+<p>In order for guaranteed channels to meet their guarantees, L2CAP should
+prioritize traffic over the HCI transport in devices that support HCI. Packets for
+Guaranteed channels should receive higher priority than packets for Best Effort
+channels.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

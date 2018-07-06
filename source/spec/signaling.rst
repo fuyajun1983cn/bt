@@ -1,2 +1,0 @@
-Signaling Packet Formats
-========================

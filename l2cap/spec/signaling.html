@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Signaling Packet Formats &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Configuration Parameter Options" href="config.html" />
+    <link rel="prev" title="Data Packet Format" href="data.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">Code Architecture Analysis</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">L2CAP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Signaling Packet Formats</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/signaling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="signaling-packet-formats">
+<h1>Signaling Packet Formats<a class="headerlink" href="#signaling-packet-formats" title="Permalink to this headline">¶</a></h1>
+<p>All signaling commands are sent over a signaling channel.The signaling channel for managing channels over ACL-U logical
+links shall use <strong>CID 0x0001</strong> and the signaling channel for managing channels over LE-U logical links shall use <strong>CID 0x0005</strong>.</p>
+<p>All L2CAP implementations shall support the reception of C-frames(signaling commands) with a payload length that does not exceed the signaling MTU.
+L2CAP implementations should not use C-frames that exceed the MTUsig of the peer device. If a device receives a C-frame that
+exceeds its MTUsig then it shall send a Command Reject containing the supported MTU :sub: sig.</p>
+<p>Multiple commands may be sent in a single C-frame over Fixed Channel CID 0x0001 while only one command per C-frame shall be sent over Fixed Channel CID 0x0005.</p>
+<p>Commands take the form of <strong>Requests</strong> and <strong>Responses</strong>.</p>
+<img alt="../../_images/min-sig-mtu.png" src="../../_images/min-sig-mtu.png" />
+<img alt="../../_images/pdu-format-on-sig.png" src="../../_images/pdu-format-on-sig.png" />
+<p>The following shows the general format of all signaling commands:</p>
+<img alt="../../_images/sig-cmd-format.png" src="../../_images/sig-cmd-format.png" />
+<p>The fields shown are:</p>
+<ul>
+<li><p class="first">Code (1 octet)</p>
+<p>The Code field is one octet long and identifies the type of command.</p>
+</li>
+<li><p class="first">Identifier (1 octet)</p>
+<p>The Identifier field is one octet long and matches responses with requests.
+Within each signaling channel a different Identifier shall be used for each successive command.</p>
+<p>Following the original transmission of an Identifier in a command, the Identifier may be recycled if
+all other Identifiers have subsequently been used.</p>
+<p><strong>RTX</strong> and <strong>ERTX</strong> timers are used to determine when the remote end point is
+not responding to signaling requests. On the expiration of a RTX or ERTX
+timer, the same identifier shall be used if a duplicate Request is re-sent.</p>
+<p>A command response with an invalid identifier is silently discarded. Signaling
+identifier 0x00 is an illegal identifier and shall never be used in any
+command.</p>
+</li>
+<li><p class="first">Length (2 octets)</p>
+<p>The Length field is two octets long and indicates the size in octets of the data
+field of the command only.</p>
+</li>
+<li><p class="first">Data (0 or more octets)</p>
+<p>The Data field is variable in length. The Code field determines the format of
+the Data field. The length field determines the length of the data field.</p>
+</li>
+</ul>
+<div class="section" id="command-reject-code-0x01">
+<h2>COMMAND REJECT (CODE 0x01)<a class="headerlink" href="#command-reject-code-0x01" title="Permalink to this headline">¶</a></h2>
+<p>A Command Reject packet shall be sent in response to a command packet with
+an unknown command code or when sending the corresponding response is
+inappropriate.</p>
+<p>When multiple commands are included in an L2CAP packet and the packet
+exceeds the signaling MTU (MTUsig) of the receiver, a single Command Reject
+packet shall be sent in response. <strong>The identifier shall match the first Request</strong>
+<strong>command in the L2CAP packet.</strong> If only Responses are recognized, the packet
+shall be silently discarded.</p>
+<img alt="../../_images/cmd-reject.png" src="../../_images/cmd-reject.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Reason (2 octets)</p>
+<img alt="../../_images/reason-for-reject.png" src="../../_images/reason-for-reject.png" />
+</li>
+<li><p class="first">Data (0 or more octets)</p>
+<img alt="../../_images/reason-data-reject.png" src="../../_images/reason-data-reject.png" />
+<p>when reason code is 0x0002, the data field shall be 4 octets containing the local (first) and remote (second) channel endpoints.
+The remote endpoint is the source CID from the rejected command. The local endpoint is the destination CID from the rejected command.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="connection-request-code-0x02">
+<h2>CONNECTION REQUEST (CODE 0x02)<a class="headerlink" href="#connection-request-code-0x02" title="Permalink to this headline">¶</a></h2>
+<p>Connection request packets are sent to create an L2CAP channel between two
+devices. The L2CAP channel shall be established before configuration begins.</p>
+<img alt="../../_images/connect-request.png" src="../../_images/connect-request.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Protocol/Service Multiplexer - PSM (2 octets (minimum))</p>
+<p>The PSM field is at least two octets in length. All PSM
+values shall be ODD.</p>
+<img alt="../../_images/psm.png" src="../../_images/psm.png" />
+</li>
+<li><p class="first">Source CID - SCID (2 octets)</p>
+<p>The source CID is two octets in length and represents a channel endpoint on
+the device sending the request.</p>
+<p>the Source CID represents the channel endpoint on the device sending the
+request and receiving the response.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="connection-response-code-0x03">
+<h2>CONNECTION RESPONSE (CODE 0x03)<a class="headerlink" href="#connection-response-code-0x03" title="Permalink to this headline">¶</a></h2>
+<p>When a device receives a Connection Request packet, it shall send a
+Connection Response packet.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Implementations conforming to previous
+versions of this specification may respond with a Command Reject (Reason
+0x0002 – Invalid CID In Request) packet under conditions now covered by
+result codes of 0x0006 and 0x0007.</p>
+</div>
+<img alt="../../_images/connect-response.png" src="../../_images/connect-response.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Destination Channel Identifier - DCID (2 octets)</p>
+<p>This field contains the channel endpoint on the device sending this
+Response packet.</p>
+</li>
+<li><p class="first">Source Channel Identifier - SCID (2 octets)</p>
+<p>This field contains the channel endpoint on the device receiving this
+Response packet. This is copied from the SCID field of the connection
+request packet.</p>
+</li>
+<li><p class="first">Result (2 octets)</p>
+<p>The result field indicates the outcome of the connection request. The result
+value of 0x0000 indicates success while a non-zero value indicates the
+connection request failed or is pending.</p>
+<img alt="../../_images/result-value-for-connect-response-1.png" src="../../_images/result-value-for-connect-response-1.png" />
+<img alt="../../_images/result-value-for-connect-response-2.png" src="../../_images/result-value-for-connect-response-2.png" />
+</li>
+<li><p class="first">Status (2 octets)</p>
+<p>Only defined for Result = Pending. Indicates the status of the connection.</p>
+<img alt="../../_images/status-value-connect-response.png" src="../../_images/status-value-connect-response.png" />
+</li>
+</ul>
+</div>
+<div class="section" id="configuration-request-code-0x04">
+<h2>CONFIGURATION REQUEST (CODE 0x04)<a class="headerlink" href="#configuration-request-code-0x04" title="Permalink to this headline">¶</a></h2>
+<p>Configuration Request packets are sent to establish an initial logical link
+transmission contract between two L2CAP entities and also to re-negotiate this
+contract whenever appropriate.</p>
+<p>The only parameters that should be included in
+the Configuration Request packet are those that require different values than
+the default or previously agreed values.</p>
+<p>If no parameters need to be negotiated or specified then no options shall be
+inserted and the continuation flag (C) shall be set to zero.</p>
+<p>Even if all default values are acceptable, a
+Configuration Request packet with no options shall be sent.</p>
+<img alt="../../_images/2018070301.png" src="../../_images/2018070301.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Destination CID - DCID (2 octets)</p>
+<p>This field contains the channel endpoint on the device receiving this
+Request packet.</p>
+</li>
+<li><p class="first">Flags (2 octets)</p>
+<img alt="../../_images/2018070302.png" src="../../_images/2018070302.png" />
+<p>Only one flag is defined, the Continuation flag (C). When both L2CAP entities support the Extended Flow Specification option,
+the Continuation flag shall not be used and shall be set to zero in all
+Configuration Request and Response packets.</p>
+<p>When used in the Configuration Request, the continuation flag indicates the
+responder should expect to receive multiple request packets. The responder
+shall reply to each Configuration Request packet.</p>
+<p>The Configuration Request packet with the continuation flag cleared shall be treated as the
+Configuration Request event in the channel state machine.</p>
+<p>The Configuration Response packet with the continuation flag set to
+zero shall be treated as the Configuration Response event in the channel
+state machine.</p>
+<p>Other flags are reserved for future use.</p>
+</li>
+<li><p class="first">Configuration Options</p>
+<p>A list of the parameters and their values to be negotiated shall be provided in
+the Configuration Options field.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, only MTU is negotiated in most cases..</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="configuration-response-code-0x05">
+<h2>CONFIGURATION RESPONSE (CODE 0x05)<a class="headerlink" href="#configuration-response-code-0x05" title="Permalink to this headline">¶</a></h2>
+<p>Configuration Response packets shall be sent in reply to Configuration
+Request packets except when the error condition is covered by a Command
+Reject response.</p>
+<p>configurations related to traffic flowing from device A to device B is independent with the
+configuration related to traffic flowing from device B to device A.</p>
+<img alt="../../_images/2018070303.png" src="../../_images/2018070303.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Source CID - SCID (2 octets)</p>
+<p>This field contains the channel endpoint on the device receiving this
+Response packet.</p>
+</li>
+<li><p class="first">Flags (2 octets)</p>
+<p>the same as Configuration Request.</p>
+</li>
+<li><p class="first">Result (2 octets)</p>
+<img alt="../../_images/2018070304.png" src="../../_images/2018070304.png" />
+</li>
+</ul>
+</div>
+<div class="section" id="disconnection-request-code-0x06">
+<h2>DISCONNECTION REQUEST (CODE 0x06)<a class="headerlink" href="#disconnection-request-code-0x06" title="Permalink to this headline">¶</a></h2>
+<p>Terminating an L2CAP channel requires that a disconnection request be sent
+and acknowledged by a disconnection response.</p>
+<p>The receiver shall ensure that both source and
+destination CIDs match before initiating a channel disconnection.</p>
+<p>Once a Disconnection Request is issued, all incoming data in transit on this
+L2CAP channel shall be <strong>discarded</strong> and any new additional outgoing data shall
+be discarded. Once a disconnection request for a channel has been received,
+all data queued to be sent out on that channel shall be <strong>discarded</strong>.</p>
+<img alt="../../_images/2018070305.png" src="../../_images/2018070305.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Destination CID - DCID (2 octets)</p>
+<p>This field specifies the endpoint of the channel to be disconnected on the
+device receiving this request.</p>
+</li>
+<li><p class="first">Source CID - SCID (2 octets)</p>
+<p>This field specifies the endpoint of the channel to be disconnected on the
+device sending this request.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="disconnection-response-code-0x07">
+<h2>DISCONNECTION RESPONSE (CODE 0x07)<a class="headerlink" href="#disconnection-response-code-0x07" title="Permalink to this headline">¶</a></h2>
+<p>Disconnection responses shall be sent in response to each valid disconnection
+request.</p>
+<img alt="../../_images/2018070306.png" src="../../_images/2018070306.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">Destination CID - DCID (2 octets)</p>
+<p>This field identifies the channel endpoint on the device sending the
+response.</p>
+</li>
+<li><p class="first">Source CID - SCID (2 octets)</p>
+<p>This field identifies the channel endpoint on the device receiving the
+response.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="echo-request-code-0x08">
+<h2>ECHO REQUEST (CODE 0x08)<a class="headerlink" href="#echo-request-code-0x08" title="Permalink to this headline">¶</a></h2>
+<p>Echo requests are used to request a response from a remote L2CAP entity.
+These requests may be used for testing the link or for passing vendor specific
+information using the optional data field. L2CAP entities shall respond to a valid
+Echo Request packet with an Echo Response packet. The Data field is optional
+and implementation specific. L2CAP entities should ignore the contents of this
+field if present.</p>
+<img alt="../../_images/2018070307.png" src="../../_images/2018070307.png" />
+</div>
+<div class="section" id="echo-response-code-0x09">
+<h2>ECHO RESPONSE (CODE 0x09)<a class="headerlink" href="#echo-response-code-0x09" title="Permalink to this headline">¶</a></h2>
+<p>An Echo response shall be sent upon receiving a valid Echo Request. The
+identifier in the response shall match the identifier sent in the Request. The
+optional and implementation specific data field may contain the contents of the
+data field in the Request, different data, or no data at all.</p>
+<img alt="../../_images/2018070308.png" src="../../_images/2018070308.png" />
+</div>
+<div class="section" id="information-request-code-0x0a">
+<h2>INFORMATION REQUEST (CODE 0x0A)<a class="headerlink" href="#information-request-code-0x0a" title="Permalink to this headline">¶</a></h2>
+<p>Information requests are used to request implementation specific information
+from a remote L2CAP entity.</p>
+<p>It is optional to send Information Requests.</p>
+<img alt="../../_images/2018070309.png" src="../../_images/2018070309.png" />
+<p>The data field is:</p>
+<ul>
+<li><p class="first">InfoType (2 octets)</p>
+<p>The InfoType defines the type of implementation specific information being
+requested.</p>
+<img alt="../../_images/2018070310.png" src="../../_images/2018070310.png" />
+<img alt="../../_images/2018070311.png" src="../../_images/2018070311.png" />
+<p>Information Request and Information Response shall not be used over Fixed
+Channel CID 0x0005.</p>
+<p>Example:</p>
+<img alt="../../_images/2018070312.png" src="../../_images/2018070312.png" />
+</li>
+</ul>
+</div>
+<div class="section" id="information-response-code-0x0b">
+<h2>INFORMATION RESPONSE (CODE 0x0B)<a class="headerlink" href="#information-response-code-0x0b" title="Permalink to this headline">¶</a></h2>
+<p>An information response shall be sent upon receiving a valid Information
+Request.</p>
+<img alt="../../_images/2018070314.png" src="../../_images/2018070314.png" />
+<p>The data fields are:</p>
+<ul>
+<li><p class="first">InfoType (2 octets)</p>
+<p>The InfoType defines the type of implementation specific information that
+was requested.</p>
+</li>
+<li><p class="first">Result (2 octets)</p>
+<p>The Result contains information about the success of the request.</p>
+</li>
+<li><p class="first">Data (0 or more octets)</p>
+<p>The contents of the Data field depends on the InfoType.</p>
+<img alt="../../_images/2018070315.png" src="../../_images/2018070315.png" />
+<p>Example:</p>
+<img alt="../../_images/2018070313.png" src="../../_images/2018070313.png" />
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="config.html" class="btn btn-neutral float-right" title="Configuration Parameter Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data.html" class="btn btn-neutral" title="Data Packet Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

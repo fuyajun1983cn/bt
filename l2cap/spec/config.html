@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration Parameter Options &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Code Architecture Analysis" href="../code/index.html" />
+    <link rel="prev" title="Signaling Packet Formats" href="signaling.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">Code Architecture Analysis</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">L2CAP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Configuration Parameter Options</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration-parameter-options">
+<h1>Configuration Parameter Options<a class="headerlink" href="#configuration-parameter-options" title="Permalink to this headline">¶</a></h1>
+<p>Options are a mechanism to extend the configuration parameters. Options
+shall be transmitted as information elements containing an option type, an
+option length, and one or more option data fields.</p>
+<img alt="../../_images/2018070401.png" src="../../_images/2018070401.png" />
+<p>The configuration option fields are:</p>
+<ul>
+<li><p class="first">Type (1 octet)</p>
+<p>The option type field defines the parameters being configured. The most
+significant bit of the type determines the action taken if the option is not
+recognized.</p>
+<p>0 - option must be recognized; if the option is not recognized then refuse the
+configuration request</p>
+<p>1 - option is a hint; if the option is not recognized then skip the option and
+continue processing</p>
+</li>
+<li><p class="first">Length (1 octet)</p>
+<p>The length field defines the number of octets in the option data.</p>
+</li>
+<li><p class="first">Option data</p>
+<p>The contents of this field are dependent on the option type.</p>
+</li>
+</ul>
+<div class="section" id="maximum-transmission-unit-mtu">
+<h2>MAXIMUM TRANSMISSION UNIT (MTU)<a class="headerlink" href="#maximum-transmission-unit-mtu" title="Permalink to this headline">¶</a></h2>
+<p>This option specifies the maximum SDU size the sender of this option is
+capable of accepting for a channel. The type is 0x01, and the payload length is
+2 octets, carrying the two-octet MTU size value as the only information element.</p>
+<p>MTU is not a negotiated value. each device indicates to the remote device that the local device
+can receive, in this channel, an MTU larger than the minimum required.</p>
+<p>All L2CAP implementations shall support a minimum MTU of 48 octets over the ACLU
+logical link and 23 octets over the LE-U logical link.</p>
+<img alt="../../_images/2018070402.png" src="../../_images/2018070402.png" />
+<p>The option data field is:</p>
+<ul>
+<li><p class="first">Maximum Transmission Unit - MTU (2 octets)</p>
+<p>The MTU field is the maximum SDU size, in octets, that the originator of the
+Request can accept for this channel.</p>
+<p>The MTU is asymmetric and the
+sender of the Request shall specify the MTU it can receive on this channel if
+it differs from the default value.</p>
+<p>L2CAP implementations shall support a
+minimum MTU size of 48 octets. The default value is 672 octets</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The default MTU was selected based on the payload carried by two baseband DH5 packets
+(2*341=682 octets) minus the baseband ACL headers (2*2=4 octets) and a 6-octet L2CAP
+header.</p>
+<p class="last">the L2CAP header length is 4 octets, but for historical reasons an L2CAP header length of 6 bytes is used.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="flush-timeout-option">
+<h2>FLUSH TIMEOUT OPTION<a class="headerlink" href="#flush-timeout-option" title="Permalink to this headline">¶</a></h2>
+<p>This option is used to inform the recipient of the Flush Timeout the sender is
+going to use. This option shall not be used if the Extended Flow Specification is
+used.The Flush Timeout is defined in the BR/EDR Baseband specification.</p>
+<p>The Flush Timeout option is negotiable.</p>
+<p>The flush timeout applies to all channels on the same
+ACL logical transport but may be overridden on a packet by packet basis by
+marking individual L2CAP packets as non-automatically-flushable via the
+<code class="docutils literal notranslate"><span class="pre">Packet_Boundary_Flag</span></code> in the HCI ACL Data Packet.</p>
+<img alt="../../_images/2018070403.png" src="../../_images/2018070403.png" />
+<p>The option data field is:</p>
+<ul>
+<li><p class="first">Flush Timeout</p>
+<p>This value is the Flush Timeout in milliseconds. This is an asymmetric value
+and the sender of the Request shall specify its flush timeout value if it differs
+from the default value of 0xFFFF.</p>
+<p>Possible values are:</p>
+<p><strong>0x0001</strong> - no retransmissions at the baseband level should be performed
+since the minimum polling interval is 1.25 ms.</p>
+<p><strong>0x0002 to 0xFFFE</strong> - Flush Timeout used by the baseband.</p>
+<p><strong>0xFFFF</strong> - an infinite amount of retransmissions. This is also referred to as a
+’reliable channel’. In this case, the baseband shall continue retransmissions
+until physical link loss is declared by link manager timeouts.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../code/index.html" class="btn btn-neutral float-right" title="Code Architecture Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="signaling.html" class="btn btn-neutral" title="Signaling Packet Formats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

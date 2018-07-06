@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data Packet Format &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Signaling Packet Formats" href="signaling.html" />
+    <link rel="prev" title="General Operation" href="operation.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">Code Architecture Analysis</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">L2CAP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Data Packet Format</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-packet-format">
+<h1>Data Packet Format<a class="headerlink" href="#data-packet-format" title="Permalink to this headline">¶</a></h1>
+<p>All L2CAP layer packet fields shall use Little Endian byte
+order with the exception of the information payload field.</p>
+<div class="section" id="connection-oriented-channels-in-basic-l2cap-mode">
+<h2>CONNECTION-ORIENTED CHANNELS IN BASIC L2CAP MODE<a class="headerlink" href="#connection-oriented-channels-in-basic-l2cap-mode" title="Permalink to this headline">¶</a></h2>
+<img alt="L2CAP PDU format in Basic L2CAP mode on connection-oriented channels" src="../../_images/b-frame.png" />
+<p>The fields shown are:</p>
+<ul class="simple">
+<li>Length: 2 octets (16 bits)
+the size of the information payloads in octets, excluding the length of the L2CAP header.
+The length can be up to <strong>65535</strong> octets.</li>
+<li>Channel ID: 2 octets
+The channel ID (CID) identifies the destination channel endpoint of the packet</li>
+<li>Information payload: 0 to 65535 octets</li>
+</ul>
+</div>
+<div class="section" id="connectionless-data-channel-in-basic-l2cap-mode">
+<h2>CONNECTIONLESS DATA CHANNEL IN BASIC L2CAP MODE<a class="headerlink" href="#connectionless-data-channel-in-basic-l2cap-mode" title="Permalink to this headline">¶</a></h2>
+<img alt="L2CAP PDU format on the Connectionless channel" src="../../_images/g-frame.png" />
+<p>The fields shown are:</p>
+<ul>
+<li><p class="first">Length: 2 octets</p>
+</li>
+<li><p class="first">Channel ID: 2 octets
+Channel ID (0x0002) reserved for connectionless traffic.</p>
+</li>
+<li><p class="first">Protocol/Service Multiplexer (PSM): 2 octets (minimum)</p>
+</li>
+<li><p class="first">Information payload: 0 to 65533 octets</p>
+<p>Implementations shall support a connectionless MTU (MTUcnl) of 48 octets on the connectionless channel.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The maximum size of the Information payload field decreases accordingly if the PSM field is extended beyond the two octet minimum.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="connection-oriented-channel-in-retransmission-flow-control-streaming-modes">
+<h2>CONNECTION-ORIENTED CHANNEL IN RETRANSMISSION/FLOW CONTROL/STREAMING MODES<a class="headerlink" href="#connection-oriented-channel-in-retransmission-flow-control-streaming-modes" title="Permalink to this headline">¶</a></h2>
+<p>To support flow control, retransmissions, and streaming, L2CAP PDU types
+with protocol elements in addition to the Basic L2CAP header are defined. The
+<strong>information frames</strong> (I-frames) are used for information transfer between L2CAP
+entities. The <strong>supervisory frames</strong> (S-frames) are used to acknowledge I-frames
+and request retransmission of I-frames.</p>
+<img alt="L2CAP PDU formats in Flow Control and Retransmission Modes" src="../../_images/is-frame.png" />
+<ul>
+<li><p class="first"><strong>L2CAP header fields</strong></p>
+<ul>
+<li><p class="first">Length: 2 octets
+The first two octets in the L2CAP PDU contain the length of the entire
+L2CAP PDU in octets, excluding the Length and CID field.</p>
+<p>For I-frames and S-frames, the Length field therefore includes the octet
+lengths of the Control, L2CAP SDU Length (when present), Information
+octets and frame check sequence (FCS) (when present) fields.</p>
+</li>
+<li><p class="first">Channel ID: 2 octets
+This field contains the Channel Identification (CID).</p>
+</li>
+</ul>
+</li>
+<li><p class="first"><strong>Control field (2 or 4 octets)</strong></p>
+<p>The Control Field identifies the type of frame. There are three different Control
+Field formats:</p>
+<ol class="arabic simple">
+<li>the Standard Control Field
+shall be used for Retransmission mode and Flow Control mode.</li>
+<li>the Enhanced Control Field
+shall be used for Enhanced Retransmission mode and Streaming mode.</li>
+<li>the Extended Control Field
+may be used for Enhanced Retransmission mode and
+Streaming mode.</li>
+</ol>
+<p>There are two different frame types, Information frame types and Supervisory frame
+types. Information and Supervisory frames types are distinguished by the least
+significant bit in the Control Field.</p>
+<ul class="simple">
+<li>Information frame format (I-frame)
+The I-frames are used to transfer information between L2CAP entities.</li>
+<li>Supervisory frame format (S-frame)
+S-frames are used to acknowledge I-frames and request retransmission of Iframes.</li>
+</ul>
+<p><strong>Control Field</strong></p>
+<img alt="Standard Control Field formats" src="../../_images/standard-control.png" />
+<img alt="Enhanced Control Field formats" src="../../_images/enhanced-control.png" />
+<img alt="Extended Control Field formats" src="../../_images/extended-control.png" />
+<ul>
+<li><p class="first">Send Sequence Number - TxSeq (6 bits or 14 bits)
+The send sequence number is used to number each I-frame, to enable
+sequencing and retransmission.</p>
+</li>
+<li><p class="first">Receive Sequence Number - ReqSeq (6 bits or 14 bits)
+The receive sequence number is used by the receiver side to acknowledge
+I-frames, and in the REJ and SREJ frames to request the retransmission of
+an I-frame with a specific send sequence number.</p>
+</li>
+<li><p class="first">Retransmission Disable Bit - R (1 bit)
+The Retransmission Disable bit is used to implement Flow Control. The
+receiver sets the bit when its internal receive buffer is full.</p>
+<p>When the sender receives a
+frame with the Retransmission Disable bit set it shall disable the
+RetransmissionTimer, this causes the sender to stop retransmitting I-frames.</p>
+<p>R=0: Normal operation. Sender uses the RetransmissionTimer to control
+retransmission of I-frames. Sender does not use the MonitorTimer.</p>
+<p>R=1: Receiver side requests sender to postpone retransmission of I-frames.
+Sender monitors signaling with the MonitorTimer. Sender does not use the
+RetransmissionTimer.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The functions of ReqSeq and R are independent.</p>
+</div>
+</li>
+<li><p class="first">Segmentation and Reassembly - SAR (2 bits)
+The SAR bits define whether an L2CAP SDU is segmented. For segmented
+SDUs, the SAR bits also define which part of an SDU is in this I-frame, thus
+allowing one L2CAP SDU to span several I-frames.</p>
+<p>An I-frame with SAR=”Start of L2CAP SDU” also contains a length indicator,
+specifying the number of information octets in the total L2CAP SDU. The
+encoding of the SAR bits is shown below:</p>
+<img alt="SAR control element format" src="../../_images/sar.png" />
+</li>
+<li><p class="first">Supervisory function - S (2 bits)
+The S-bits mark the type of S-frame. There are four types defined: RR
+(Receiver Ready), REJ (Reject), RNR (Receiver Not Ready) and SREJ
+(Selective Reject).</p>
+<img alt="S control element format: type of S-frame" src="../../_images/s-controltype.png" />
+</li>
+<li><p class="first">Poll - P (1 bit)
+The P-bit is set to 1 to solicit a response from the receiver. The receiver shall
+respond immediately with a frame with the F-bit set to 1.</p>
+</li>
+</ul>
+</li>
+<li><p class="first"><strong>L2CAP SDU Length Field (2 octets)</strong>
+When an SDU spans more than one I-frame, the first I-frame in the sequence
+shall be identified by <strong>SAR=01b=``Start of L2CAP SDU``</strong>.The L2CAP SDU
+Length field shall specify the total number of octets in the SDU. The L2CAP
+SDU Length field shall be present in I-frames with SAR=01b (Start of L2CAP
+SDU) and shall not be used in any other I-frames. When the SDU is
+unsegmented (SAR=00b), the L2CAP SDU Length field is not needed and
+shall not be present.</p>
+</li>
+<li><p class="first"><strong>Information Payload Field</strong>
+The information payload field consists of an integral number of octets. The
+maximum number of octets in this field is the same as the negotiated value of
+the MPS configuration parameter. The maximum number of octets in this field
+is also limited by the range of the Basic L2CAP header length field.</p>
+</li>
+<li><p class="first"><strong>Frame Check Sequence (2 octets)</strong>
+The Frame Check Sequence (FCS) is 2 octets. The FCS is constructed using
+the generator polynomial g(D) = D <sup>16</sup> + D <sup>15</sup> + D <sup>2</sup> + 1.</p>
+</li>
+<li><p class="first"><strong>Invalid Frame Detection</strong>
+For Retransmission mode and Flow Control mode, a received PDU shall be
+regarded as invalid, if one of the following conditions occurs:</p>
+<ol class="arabic simple">
+<li>Contains an unknown CID.</li>
+<li>Contains an FCS error.</li>
+<li>Contains a length greater than the maximum PDU payload size (MPS).</li>
+<li>I-frame that has fewer than 8 octets.</li>
+<li>I-frame with SAR=01b (Start of L2CAP SDU) that has fewer than 10 octets.</li>
+<li>I-frame with SAR bits that do not correspond to a normal sequence of either
+unsegmented or start, continuation, end for the given CID.</li>
+<li>S-frame where the length field is not equal to 4.</li>
+</ol>
+</li>
+</ul>
+</div>
+<div class="section" id="connection-oriented-channels-in-le-credit-based-flow-control-mode">
+<h2>CONNECTION-ORIENTED CHANNELS IN LE CREDIT BASED FLOW CONTROL MODE<a class="headerlink" href="#connection-oriented-channels-in-le-credit-based-flow-control-mode" title="Permalink to this headline">¶</a></h2>
+<p>To support LE Credit Based Flow Control Mode, L2CAP PDU type with protocol
+elements in addition to the Basic L2CAP header are defined. In LE Credit
+Based Flow Control Mode, the L2CAP PDU on a connection-oriented channel
+is an <strong>LE information frame</strong> (LE-frame).</p>
+<img alt="L2CAP PDU format in LE Credit Based Flow Control Mode" src="../../_images/le-frame.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="signaling.html" class="btn btn-neutral float-right" title="Signaling Packet Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="operation.html" class="btn btn-neutral" title="General Operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

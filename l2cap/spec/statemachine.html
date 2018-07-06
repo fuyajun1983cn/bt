@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>STATE MACHINE &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>STATE MACHINE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/statemachine.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="state-machine">
+<h1>STATE MACHINE<a class="headerlink" href="#state-machine" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-rules-for-the-state-machine">
+<h2>GENERAL RULES FOR THE STATE MACHINE<a class="headerlink" href="#general-rules-for-the-state-machine" title="Permalink to this headline">¶</a></h2>
+<p>The following states have been defined to clarify the protocol; the actual
+number of states and naming in a given implementation is outside the scope of
+this specification:</p>
+<ul class="simple">
+<li>CLOSED – channel not connected.</li>
+<li>WAIT_CONNECT – a connection request has been received, but only a
+connection response with indication “pending” can be sent.</li>
+<li>WAIT_CONNECT_RSP – a connection request has been sent, pending a
+positive connect response.</li>
+<li>CONFIG – the different options are being negotiated for both sides; this
+state comprises a number of substates</li>
+<li>OPEN – user data transfer state.</li>
+<li>WAIT_DISCONNECT – a disconnect request has been sent, pending a
+disconnect response.</li>
+<li>WAIT_CREATE – a channel creation request has been received, but only a
+response with indication “pending” can be sent. This state is similar to
+WAIT_CONNECT.</li>
+<li>WAIT_CREATE_RSP – a channel creation request has been sent, pending
+a channel creation response. This state is similar to WAIT_CONNECT_RSP.</li>
+<li>WAIT_MOVE – a request to move the current channel to another Controller
+has been received, but only a response with indication “pending” can be
+sent.</li>
+<li>WAIT_MOVE_RSP – a request to move a channel to another Controller has
+been sent, pending a move response</li>
+<li>WAIT_MOVE_CONFIRM – a response to the move channel request has
+been sent, waiting for a confirmation of the move operation by the initiator
+side</li>
+<li>WAIT_CONFIRM_RSP – a move channel confirm has been sent, waiting for
+a move channel confirm response.</li>
+</ul>
+<p>There is a single state machine for each L2CAP connection-oriented channel
+that is active. A state machine is created for each new L2CAP_ConnectReq
+received. The state machine always starts in the CLOSED state.</p>
+</div>
+<div class="section" id="timers-events">
+<h2>TIMERS EVENTS<a class="headerlink" href="#timers-events" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rtx">
+<h3>RTX<a class="headerlink" href="#rtx" title="Permalink to this headline">¶</a></h3>
+<p>The Response Timeout eXpired (RTX) timer is used to terminate the channel
+when the remote endpoint is unresponsive to signaling requests.</p>
+<p>This timer is started when a signaling request is sent to the remote device.
+This timer is disabled when the response is received.</p>
+<p>If a duplicate Request message is sent, the RTX
+timeout value shall be reset to a new value at least double the previous value.
+When retransmitting the Request message, the context of the same state shall
+be assumed as with the original transmission.</p>
+<p>Implementations have the responsibility to decide on the maximum number of
+Request retransmissions performed at the L2CAP level before terminating the
+channel identified by the Requests. The exception is fixed channel CIDs since
+they can never be terminated.</p>
+<p>The value of this timer is implementation-dependent but the minimum initial
+value is 1 second and the maximum initial value is 60 seconds.</p>
+<p>One RTX timer shall exist for each outstanding signaling request, including each Echo
+Request.</p>
+</div>
+<div class="section" id="ertx">
+<h3>ERTX<a class="headerlink" href="#ertx" title="Permalink to this headline">¶</a></h3>
+<p>The Extended Response Timeout eXpired (ERTX) timer is used in place of the
+RTX timer when it is suspected the remote endpoint is performing additional
+processing of a request signal.</p>
+<p>This timer is started when the remote endpoint
+responds that a request is pending, e.g., when an L2CAP_ConnectRsp event
+with a “connect pending” result (0x0001) is received.</p>
+<p>The value of this timer is implementation-dependent but the minimum initial
+value is 60 seconds and the maximum initial value is 300 seconds. Similar to
+RTX, there MUST be at least one ERTX timer for each outstanding request that
+received a Pending response. There should be at most one (RTX or ERTX)
+associated with each outstanding request.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PROCEDURES FOR FLOW CONTROL AND RETRANSMISSION &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>PROCEDURES FOR FLOW CONTROL AND RETRANSMISSION</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/spec/flow-control-retransmit.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="procedures-for-flow-control-and-retransmission">
+<h1>PROCEDURES FOR FLOW CONTROL AND RETRANSMISSION<a class="headerlink" href="#procedures-for-flow-control-and-retransmission" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="information-retrieval">
+<h2>INFORMATION RETRIEVAL<a class="headerlink" href="#information-retrieval" title="Permalink to this headline">¶</a></h2>
+<p>Before attempting to configure Enhanced Retransmission mode, Streaming
+mode, Flow Control mode, or Retransmission mode on a channel, support for
+the suggested mode shall be verified by performing an information retrieval for
+the “Extended features supported” information type (0x0002). If the information
+retrieval is not successful or the “Extended features mask” bit is not set for the
+wanted mode, the mode shall not be suggested in a configuration request.</p>
+<img alt="../../_images/2018070501.png" src="../../_images/2018070501.png" />
+</div>
+<div class="section" id="function-of-pdu-types-for-flow-control-and-retransmission">
+<h2>FUNCTION OF PDU TYPES FOR FLOW CONTROL AND RETRANSMISSION<a class="headerlink" href="#function-of-pdu-types-for-flow-control-and-retransmission" title="Permalink to this headline">¶</a></h2>
+<p>Two frame formats are defined for Enhanced Retransmission mode, Streaming
+Mode, Flow Control Mode, and Retransmission mode. The <code class="docutils literal notranslate"><span class="pre">I-frame</span></code>
+is used to transport user information instead of the <code class="docutils literal notranslate"><span class="pre">B-frame</span></code>. The <code class="docutils literal notranslate"><span class="pre">S-frame</span></code>
+is used for supervision.</p>
+<div class="section" id="information-frame-i-frame">
+<h3>Information frame (I-frame)<a class="headerlink" href="#information-frame-i-frame" title="Permalink to this headline">¶</a></h3>
+<p>I-frames are sequentially numbered frames containing information fields. Iframes
+also include some of the functionality of RR frames (see below).</p>
+</div>
+<div class="section" id="supervisory-frame-s-frame">
+<h3>Supervisory Frame (S-frame)<a class="headerlink" href="#supervisory-frame-s-frame" title="Permalink to this headline">¶</a></h3>
+<p>The S-frame is used to control the transmission of I-frames. For
+Retransmission mode and Flow Control mode, the S-frame has two formats:
+<code class="docutils literal notranslate"><span class="pre">Receiver</span> <span class="pre">Ready</span> <span class="pre">(RR)</span></code> and <code class="docutils literal notranslate"><span class="pre">Reject</span> <span class="pre">(REJ)</span></code>.</p>
+<p>S-frames are not used in Streaming mode. The following description of S-frames only
+applies to Retransmission mode and Flow Control mode.</p>
+<div class="section" id="receiver-ready-rr">
+<h4>Receiver Ready (RR)<a class="headerlink" href="#receiver-ready-rr" title="Permalink to this headline">¶</a></h4>
+<p>The receiver ready (RR) S-frame is used to:</p>
+<ol class="arabic simple">
+<li>Acknowledge I-frames numbered up to and including ReqSeq - 1.</li>
+<li>Enable or disable retransmission of I-frames by updating the receiver with
+the current status of the Retransmission Disable Bit.</li>
+</ol>
+<p>The RR frame has no information field.</p>
+</div>
+<div class="section" id="reject-rej">
+<h4>Reject (REJ)<a class="headerlink" href="#reject-rej" title="Permalink to this headline">¶</a></h4>
+<p>The reject (REJ) S-frame is used to request retransmission of all I-frames
+starting with the I-frame with TxSeq equal to ReqSeq specified in the REJ. The
+value of ReqSeq in the REJ frame acknowledges I-frames numbered up to and
+including ReqSeq - 1.</p>
+</div>
+</div>
+</div>
+<div class="section" id="variables-and-sequence-numbers">
+<h2>VARIABLES AND SEQUENCE NUMBERS<a class="headerlink" href="#variables-and-sequence-numbers" title="Permalink to this headline">¶</a></h2>
+<p>The sending peer uses the following variables and Sequence numbers:</p>
+<ul class="simple">
+<li>TxSeq – the send Sequence number used to sequentially number each new
+I-frame transmitted.</li>
+<li>NextTxSeq – the Sequence number to be used in the next new I-frame
+transmitted.</li>
+<li>ExpectedAckSeq – the Sequence number of the next I-frame expected to be
+acknowledged by the receiving peer.</li>
+</ul>
+<p>The receiving peer uses the following variables and Sequence numbers:</p>
+<ul class="simple">
+<li>ReqSeq – The Sequence number sent in an acknowledgment frame to
+request transmission of I-frame with TxSeq = ReqSeq and acknowledge
+receipt of I-frames up to and including (ReqSeq-1).</li>
+<li>ExpectedTxSeq – the value of TxSeq expected in the next I-frame.</li>
+<li>BufferSeq – When segmented I-frames are buffered this is used to delay
+acknowledgment of received I-frame so that new I-frame transmissions do
+not cause buffer overflow.</li>
+</ul>
+<p>All variables have the range 0 to 63.</p>
+</div>
+<div class="section" id="enhanced-retransmission-mode">
+<h2>ENHANCED RETRANSMISSION MODE<a class="headerlink" href="#enhanced-retransmission-mode" title="Permalink to this headline">¶</a></h2>
+<p>Enhanced Retransmission mode operates as an HDLC balanced data link
+operational mode. Either L2CAP entity may send frames at any time without
+receiving explicit permission from the other L2CAP entity. A transmission may
+contain single or multiple frames and shall be used for I-frame transfer and/or
+to indicate status change.</p>
+<div class="section" id="function-of-pdu-types">
+<h3>Function Of PDU Types<a class="headerlink" href="#function-of-pdu-types" title="Permalink to this headline">¶</a></h3>
+<p>Enhanced Retransmission mode uses I-frames to transfer upper layer
+information and S-frames for supervision.</p>
+<p>There are four S-frames defined:</p>
+<ul class="simple">
+<li>Receiver Ready (RR)</li>
+<li>Reject (REJ)</li>
+<li>Receiver Not Ready (RNR)</li>
+<li>Selective Reject (SREJ)</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

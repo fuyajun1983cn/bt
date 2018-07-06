@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bluetooth Learning Notes &mdash; bluetooth 1.0 documentation</title>
+  <title>Code Architecture Analysis &mdash; bluetooth 1.0 documentation</title>
   
 
   
@@ -24,14 +24,15 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="L2CAP Learning Notes" href="l2cap/index.html" /> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="L2CAP Main Data Structures" href="data-structure.html" />
+    <link rel="prev" title="Configuration Parameter Options" href="../spec/config.html" /> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -47,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> bluetooth
+            <a href="../../index.html" class="icon icon-home"> bluetooth
           
 
           
@@ -57,7 +58,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -74,8 +75,12 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="l2cap/index.html">L2CAP Learning Notes</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../spec/index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Code Architecture Analysis</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -90,7 +95,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">bluetooth</a>
+          <a href="../../index.html">bluetooth</a>
         
       </nav>
 
@@ -119,15 +124,17 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>Bluetooth Learning Notes</li>
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+      <li>Code Architecture Analysis</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/l2cap/code/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -140,21 +147,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="bluetooth-learning-notes">
-<h1>Bluetooth Learning Notes<a class="headerlink" href="#bluetooth-learning-notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This docuemnets is still in development stage, not finished yet.</p>
-</div>
-</div></blockquote>
+  <div class="section" id="code-architecture-analysis">
+<h1>Code Architecture Analysis<a class="headerlink" href="#code-architecture-analysis" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-structure.html">L2CAP Main Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data-structure.html#l2cap-main-data-structure">L2CAP Main Data Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data-structure.html#tl2c-cb">tL2C_CB</a></li>
 </ul>
-</div>
+</li>
+</ul>
 </div>
 </div>
 
@@ -166,8 +168,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="l2cap/index.html" class="btn btn-neutral float-right" title="L2CAP Learning Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="data-structure.html" class="btn btn-neutral float-right" title="L2CAP Main Data Structures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="../spec/config.html" class="btn btn-neutral" title="Configuration Parameter Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -197,7 +201,7 @@
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
+            URL_ROOT:'../../',
             VERSION:'1.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
@@ -206,13 +210,13 @@
             SOURCELINK_SUFFIX: '.txt'
         };
     </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
