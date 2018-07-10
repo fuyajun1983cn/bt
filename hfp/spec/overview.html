@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Profile Overview &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Application Layer" href="app.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">HFP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">HFP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">HFP Code Analysis Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../case/index.html">HFP Case Studies</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">HFP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">HFP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Profile Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/hfp/spec/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="profile-overview">
+<h1>Profile Overview<a class="headerlink" href="#profile-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="protocol-stack">
+<h2>Protocol Stack<a class="headerlink" href="#protocol-stack" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/2018070902.png" src="../../_images/2018070902.png" />
+<p>The Baseband, LMP and L2CAP are the OSI layer 1 and 2 Bluetooth protocols. RFCOMM is the Bluetooth serial port emulation entity. SDP is the Bluetooth Service Discovery Protocol.</p>
+<p>Hands-Free control is the entity responsible for Hands-Free unit specific control signaling; this signaling is AT command based.</p>
+<p>Although not shown in the model above, it is assumed by this profile that Hands-Free Control has access to some lower layer procedures (for example, Synchronous Connection establishment).</p>
+</div>
+<div class="section" id="configuration-and-roles">
+<h2>Configuration and Roles<a class="headerlink" href="#configuration-and-roles" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/2018070903.png" src="../../_images/2018070903.png" />
+<p>The following roles are defined for this profile:</p>
+<ul>
+<li><p class="first"><strong>Audio Gateway (AG)</strong></p>
+<p>This is the device that is the gateway of the audio, both for input and output. Typical devices acting as Audio Gateways are cellular phones.</p>
+</li>
+<li><p class="first"><strong>Hands-Free unit (HF)</strong></p>
+<p>This is the device acting as the Audio Gateway’s remote audio input and output mechanism. It also provides some remote control means.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="user-requirements-and-scenarios">
+<h2>User Requirements and Scenarios<a class="headerlink" href="#user-requirements-and-scenarios" title="Permalink to this headline">¶</a></h2>
+<p>The following rules apply to this profile:</p>
+<ol class="loweralpha simple">
+<li>The profile states the mandatory and optional features when the “Hands-Free Profile” is active in the Audio Gateway and the Hands-Free unit.</li>
+<li>The profile mandates the usage of <code class="docutils literal notranslate"><span class="pre">CVSD</span></code> for transmission of audio (over the Bluetooth link). The resulting audio is monophonic, with a quality that, under normal circumstances, does not have perceived audio degradation.</li>
+<li>Between the Hands-Free unit and the Audio Gateway, <strong>only one Audio Connection per Service Level Connection at a time</strong> is supported.</li>
+<li>Both the Audio Gateway and the Hands-Free unit may initiate Audio Connection establishment and release. Valid speech data shall exist on the Synchronous Connection in both directions after the Audio Connection is established. Since it is only the AG that knows if wide band speech should be used, <strong>it should always be the AG that establishes the Synchronous Connection with the required codec</strong>.</li>
+<li>Whenever an “Audio Connection” exists, a related “Service Level Connection” shall also exist.</li>
+<li>The presence of a “Service Level Connection” shall not imply that an “Audio Connection” exists. Releasing a “Service Level Connection” shall also release any existing “Audio Connection” related to it.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="app.html" class="btn btn-neutral float-right" title="Application Layer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="intro.html" class="btn btn-neutral" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

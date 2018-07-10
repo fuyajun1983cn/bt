@@ -12,3 +12,4 @@ Table of Contents
    :maxdepth: 1
 
    l2cap/index.rst
+   hfp/index.rst

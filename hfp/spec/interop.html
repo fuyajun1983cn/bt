@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hands-Free Control Interoperability Requirements &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="HFP Code Analysis Notes" href="../code/index.html" />
+    <link rel="prev" title="Application Layer" href="app.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">HFP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">HFP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">HFP Code Analysis Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../case/index.html">HFP Case Studies</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">HFP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">HFP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Hands-Free Control Interoperability Requirements</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/hfp/spec/interop.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hands-free-control-interoperability-requirements">
+<h1>Hands-Free Control Interoperability Requirements<a class="headerlink" href="#hands-free-control-interoperability-requirements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="connection-management">
+<h2>Connection management<a class="headerlink" href="#connection-management" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="service-level-connection-establishment">
+<h3>Service Level Connection Establishment<a class="headerlink" href="#service-level-connection-establishment" title="Permalink to this headline">¶</a></h3>
+<p>Upon a user action or an internal event, either the HF or the AG may initiate a Service Level Connection establishment procedure.</p>
+<p>A Service Level Connection establishment requires the existence of a RFCOMM connection, that is, a RFCOMM data link channel between the HF and the AG.</p>
+<div class="section" id="service-level-connection-initialization">
+<h4>Service Level Connection Initialization<a class="headerlink" href="#service-level-connection-initialization" title="Permalink to this headline">¶</a></h4>
+<p>When an RFCOMM connection has been established, the Service Level Connection Initialization procedure shall be executed.</p>
+<ol class="arabic">
+<li><p class="first">Supported features exchange</p>
+<p><code class="docutils literal notranslate"><span class="pre">AT+BRSF=&lt;HF</span> <span class="pre">supported</span> <span class="pre">features&gt;</span></code> HF send this command to both notify AG the supported features in HF as well as to retrieve the supported features in GA.</p>
+<p>AG send <code class="docutils literal notranslate"><span class="pre">+BRSF</span></code> to respond.</p>
+</li>
+<li><p class="first">Codec Negotiation</p>
+<p>if HF support codec negotiation feature, it shall check the <code class="docutils literal notranslate"><span class="pre">AT+BRSF</span></code> command response from the AG.</p>
+<p>if both support this feature, the HF shall send the <code class="docutils literal notranslate"><span class="pre">AT+BAC=&lt;HF</span> <span class="pre">available</span> <span class="pre">codecs&gt;</span></code> command to the AG to notify the AG of the available codecs in the HF.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Legacy devices(HFP 1.5 and before) shall not indicate support for the Codec Negotiation Feature.</p>
+</div>
+</li>
+<li><p class="first">AG Indicators</p>
+<p>The HF uses the <code class="docutils literal notranslate"><span class="pre">AT+CIND=?</span></code> Test command to retrieve information about the supported indicators and their ordering.</p>
+<p>Once the HF has the necessary supported indicator and ordering information, it shall retrieve the current status of the indicators in the AG using the <code class="docutils literal notranslate"><span class="pre">AT+CIND?</span></code> Read command.</p>
+<p>After having retrieved the status of the indicators in the AG, the HF shall then enable the “Indicators status update” function in the AG by issuing the <code class="docutils literal notranslate"><span class="pre">AT+CMER</span></code> command, to which the AG shall respond with OK. the AG shall send the <code class="docutils literal notranslate"><span class="pre">+CIEV</span></code> unsolicited result code with the corresponding indicator value whenever a change in service, call, or call setup status occurs.</p>
+<p>Once the “Indicators status update” function has been enabled, the AG shall keep the function enabled until either the AT+CMER command is issued to disable it, or the current Service Level Connection between the AG and the HF is dropped for any reason.</p>
+<p>if the “Call waiting and 3-way calling” bit was set in the supported features bitmap by both the HF and the AG, the HF shall issue the <code class="docutils literal notranslate"><span class="pre">AT+CHLD=?</span></code> test command to retrieve the information about how the call hold and multiparty services are supported in the AG.</p>
+</li>
+<li><p class="first">HF Indicators</p>
+<p>If both the HF and AG support the HF Indicator feature, then the HF shall send the <code class="docutils literal notranslate"><span class="pre">AT+BIND=&lt;HF</span></code> supported HF indicators&gt; command to the AG to notify the AG of the supported indicators’ assigned numbers in the HF. The AG shall respond with OK.</p>
+<p>the HF shall send the <code class="docutils literal notranslate"><span class="pre">AT+BIND=?</span></code> to request HF indicators supported by the AG. The AG shall reply with the +BIND response listing all HF indicators that it supports followed by an OK.</p>
+<p>Once the HF receives the supported HF indicators list from the AG, the HF shall send the <code class="docutils literal notranslate"><span class="pre">AT+BIND?</span></code> command to determine which HF indicators are enabled. The AG shall respond with one or more <code class="docutils literal notranslate"><span class="pre">+BIND</span></code> responses. The AG shall terminate the list with OK.</p>
+<p>From this point onwards, the HF may send the <code class="docutils literal notranslate"><span class="pre">AT+BIEV</span></code> command with the corresponding HF indicator value whenever a change in value occurs of an enabled HF indicator.</p>
+<p>The AG may enable or disable the notification of any HF indicator at any time by using the <code class="docutils literal notranslate"><span class="pre">+BIND</span></code> unsolicited response</p>
+</li>
+<li><p class="first">End of Service Level Connection</p>
+<p>the condition in which a service level connection can be considered to be fully initialzed and thereby established.</p>
+</li>
+<li><p class="first">Service Level Connection Diagram</p>
+<img alt="../../_images/2018070908.png" src="../../_images/2018070908.png" />
+<img alt="../../_images/2018070909.png" src="../../_images/2018070909.png" />
+</li>
+</ol>
+</div>
+<div class="section" id="link-loss-recovery">
+<h4>Link Loss Recovery<a class="headerlink" href="#link-loss-recovery" title="Permalink to this headline">¶</a></h4>
+<p>The HF may reconnect with the AG whenever there is loss of Bluetooth link.</p>
+<p>When a Service Level Connection is disconnected due to explicit termination at one end (using the “Service connection release” as described in Section Service Level Connection Release), then both devices (AG and HF) shall wait for an explicit user action before an attempt is made to re-establish the Service Level Connection.</p>
+<p>If the HF determines that the Service Level Connection was disconnected due to a link supervision timeout, then the HF may execute the “Service Level Connection establishment” procedure.</p>
+</div>
+</div>
+<div class="section" id="service-level-connection-release">
+<h3>Service Level Connection Release<a class="headerlink" href="#service-level-connection-release" title="Permalink to this headline">¶</a></h3>
+<p>The disconnection of a Service Level Connection shall result in the immediate removal of the corresponding RFCOMM data link channel between the HF and the AG. Also, an existing audio connection has to be removed as a consequence of the removal of the Service Level Connection. The removal of the L2CAP and link layers is optional.</p>
+</div>
+</div>
+<div class="section" id="phone-status-information">
+<h2>Phone status information<a class="headerlink" href="#phone-status-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="transfer-of-registration-status">
+<h3>Transfer of Registration Status<a class="headerlink" href="#transfer-of-registration-status" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018070910.png" src="../../_images/2018070910.png" />
+</div>
+<div class="section" id="transfer-of-signal-strength-indication">
+<h3>Transfer of Signal Strength Indication<a class="headerlink" href="#transfer-of-signal-strength-indication" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">AT+CMER</span></code> command enables the “Signal strength Indication” function in the AG.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">AT+BIA</span></code> command allows the HF to deactivate/reactivate individual indicators.</p>
+<p>the AG shall send the <code class="docutils literal notranslate"><span class="pre">+CIEV</span></code> unsolicited result code with the corresponding signal strength value whenever its signal strength changes.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">CMER</span></code> function is disabled or the indicator has been deactivated by the <code class="docutils literal notranslate"><span class="pre">AT+BIA</span></code> command, the AG shall not send the unsolicited result code.</p>
+<img alt="../../_images/2018070911.png" src="../../_images/2018070911.png" />
+</div>
+<div class="section" id="transfer-of-roaming-status-indication">
+<h3>Transfer of Roaming Status Indication<a class="headerlink" href="#transfer-of-roaming-status-indication" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018070912.png" src="../../_images/2018070912.png" />
+</div>
+<div class="section" id="transfer-of-battery-level-indication-of-ag">
+<h3>Transfer of Battery Level Indication of AG<a class="headerlink" href="#transfer-of-battery-level-indication-of-ag" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018070913.png" src="../../_images/2018070913.png" />
+</div>
+<div class="section" id="query-operator-selection">
+<h3>Query Operator Selection<a class="headerlink" href="#query-operator-selection" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018070914.png" src="../../_images/2018070914.png" />
+</div>
+<div class="section" id="report-extended-audio-gateway-error-results-code">
+<h3>Report Extended Audio Gateway Error Results Code<a class="headerlink" href="#report-extended-audio-gateway-error-results-code" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018070915.png" src="../../_images/2018070915.png" />
+</div>
+<div class="section" id="transfer-of-call-call-setup-and-held-call-status">
+<h3>Transfer of Call, Call Setup, and Held Call Status<a class="headerlink" href="#transfer-of-call-call-setup-and-held-call-status" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">AT+CMER</span></code> command enables the “Call Status indicators update” function in the AG.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">AT+BIA</span></code> command shall have no effect on the Call, Call Setup, or Held Call indicators. These indicators cannot be deactivated using the AT+BIA command.</p>
+<p>When the <code class="docutils literal notranslate"><span class="pre">CMER</span> <span class="pre">function</span></code> is enabled, the AG shall issue a <code class="docutils literal notranslate"><span class="pre">+CIEV</span></code> unsolicited result code with the corresponding call indicator and value whenever the AG’s <strong>current call status</strong> changes. Likewise, the AG shall issue a <code class="docutils literal notranslate"><span class="pre">+CIEV</span></code> unsolicited result code with the corresponding callsetup indicator and value whenever the AG’s <strong>current call setup status</strong> changes. The AG shall also issue a <code class="docutils literal notranslate"><span class="pre">+CIEV</span></code> unsolicited result code with corresponding callheld indicator and value whenever the AG’s <strong>current held call status</strong> changes.</p>
+<div class="section" id="transfer-of-call-status">
+<h4>Transfer of Call Status<a class="headerlink" href="#transfer-of-call-status" title="Permalink to this headline">¶</a></h4>
+<p>Upon the change in status of any call in the AG, the AG shall execute this procedure to advise the HF of the current call status changes. The values for the call indicator are:</p>
+<ul class="simple">
+<li>0= No calls (held or active)</li>
+<li>1= Call is present (active or held)</li>
+</ul>
+<img alt="../../_images/2018071001.png" src="../../_images/2018071001.png" />
+<img alt="../../_images/2018071002.png" src="../../_images/2018071002.png" />
+<img alt="../../_images/2018071003.png" src="../../_images/2018071003.png" />
+<img alt="../../_images/2018071004.png" src="../../_images/2018071004.png" />
+<img alt="../../_images/2018071005.png" src="../../_images/2018071005.png" />
+</div>
+<div class="section" id="transfer-of-callheld-status">
+<h4>Transfer of Callheld Status<a class="headerlink" href="#transfer-of-callheld-status" title="Permalink to this headline">¶</a></h4>
+<p>Upon the change in AG’s callsetup status, the AG shall execute this procedure to advise the HF of the current callsetup status changes. The values for the callsetup indicator are:</p>
+<ul class="simple">
+<li>0= No call setup in progress.</li>
+<li>1= Incoming call setup in progress.</li>
+<li>2= Outgoing call setup in dialing state.</li>
+<li>3= Outgoing call setup in alerting state.</li>
+</ul>
+<img alt="../../_images/2018071006.png" src="../../_images/2018071006.png" />
+<img alt="../../_images/2018071007.png" src="../../_images/2018071007.png" />
+<p>when  a call has reached an  end-to-end  connected state, the callsetup indicator shall be reset indicating that no call setup procedures are in progress.</p>
+</div>
+<div class="section" id="indication-of-status-for-held-calls">
+<h4>Indication of Status for Held Calls<a class="headerlink" href="#indication-of-status-for-held-calls" title="Permalink to this headline">¶</a></h4>
+<p>Upon the change in status of any call on hold in the AG, the AG shall execute this procedure to advise the HF of the held call status. The values for the callheld indicator are:</p>
+<ul class="simple">
+<li>0= No calls held</li>
+<li>1= Call is placed on hold or active/held calls swapped(The AG has both an active AND a held call)</li>
+<li>2= Call on hold, no active call</li>
+</ul>
+<img alt="../../_images/2018071008.png" src="../../_images/2018071008.png" />
+<img alt="../../_images/2018071009.png" src="../../_images/2018071009.png" />
+<img alt="../../_images/2018071010.png" src="../../_images/2018071010.png" />
+</div>
+</div>
+</div>
+<div class="section" id="audio-connection-handling">
+<h2>Audio Connection handling<a class="headerlink" href="#audio-connection-handling" title="Permalink to this headline">¶</a></h2>
+<p>An Audio Connection set up procedure always means the establishment of a Synchronous Connection and it is always associated with an existing Service Level Connection.</p>
+<p>Both the initiator and the acceptor shall notify the presence of the new Audio Connection.</p>
+<div class="section" id="audio-connection-set-up">
+<h3>Audio Connection set up<a class="headerlink" href="#audio-connection-set-up" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018071011.png" src="../../_images/2018071011.png" />
+<img alt="../../_images/2018071012.png" src="../../_images/2018071012.png" />
+</div>
+<div class="section" id="audio-connection-release">
+<h3>Audio Connection release<a class="headerlink" href="#audio-connection-release" title="Permalink to this headline">¶</a></h3>
+<p>An Audio Connection release always means the disconnection of its corresponding Synchronous Connection.</p>
+<img alt="../../_images/2018071014.png" src="../../_images/2018071014.png" />
+</div>
+<div class="section" id="codec-connection-set-up">
+<h3>Codec Connection set up<a class="headerlink" href="#codec-connection-set-up" title="Permalink to this headline">¶</a></h3>
+<p>Although the Audio Connection may be triggered by either the AG or the HF, <strong>the Codec Connection and the Synchronous Connection shall always be established by the AG</strong> (unless one of the devices is a legacy device).</p>
+<p>The AG shall initiate a Codec Connection only if the HF has indicated support for the Codec Negotiation feature and has sent at least one AT+BAC on the current service level connection. When selecting which codec to use for a codec connection, the AG shall use the information on codecs available in the HF as provided in the most recently received <code class="docutils literal notranslate"><span class="pre">AT+BAC</span></code>.</p>
+<img alt="../../_images/2018071013.png" src="../../_images/2018071013.png" />
+</div>
+</div>
+<div class="section" id="accept-an-incoming-voice-call">
+<h2>Accept an incoming voice call<a class="headerlink" href="#accept-an-incoming-voice-call" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="answer-an-incoming-call">
+<h3>Answer an incoming call<a class="headerlink" href="#answer-an-incoming-call" title="Permalink to this headline">¶</a></h3>
+<p>Upon an incoming call, the AG shall send a sequence of unsolicited <strong>RING</strong> alerts to the HF. The <strong>RING</strong> alert shall be repeated for as long as the call acceptance is pending, or until the incoming call is interrupted for any reason.</p>
+<p>If the AG’s SDP record (or +BRSF message) indicates <code class="docutils literal notranslate"><span class="pre">In-band</span> <span class="pre">ring</span> <span class="pre">tone</span></code> is supported, the AG shall send in-band ring tones unless subsequently changed using procedures defined in Section</p>
+<div class="section" id="answer-incoming-call-from-the-hf-in-band-ringing">
+<h4>Answer Incoming Call from the HF – In-Band Ringing<a class="headerlink" href="#answer-incoming-call-from-the-hf-in-band-ringing" title="Permalink to this headline">¶</a></h4>
+<p>Optionally, the AG may provide an in-band ring tone.</p>
+<p>As the figure below shows, if an in-band ring tone is used, the AG shall send the ring tone to the HF via the established Audio Connection.</p>
+<img alt="../../_images/2018071015.png" src="../../_images/2018071015.png" />
+</div>
+<div class="section" id="answer-incoming-call-from-the-hf-no-in-band-ringing">
+<h4>Answer Incoming Call from the HF – No In-Band Ringing<a class="headerlink" href="#answer-incoming-call-from-the-hf-no-in-band-ringing" title="Permalink to this headline">¶</a></h4>
+<img alt="../../_images/2018071016.png" src="../../_images/2018071016.png" />
+</div>
+<div class="section" id="answer-incoming-call-from-the-ag">
+<h4>Answer Incoming Call from the AG<a class="headerlink" href="#answer-incoming-call-from-the-ag" title="Permalink to this headline">¶</a></h4>
+<img alt="../../_images/2018071017.png" src="../../_images/2018071017.png" />
+</div>
+<div class="section" id="change-the-in-band-ring-tone-setting">
+<h4>Change the In-Band Ring Tone Setting<a class="headerlink" href="#change-the-in-band-ring-tone-setting" title="Permalink to this headline">¶</a></h4>
+<p>The SDP record entry “In-band ring tone” of the “SupportedFeatures” record informs the HF if the AG is capable of sending an in-band ring tone or not。</p>
+<p>If the AG wants to change the in-band ring tone setting during an ongoing service level connection, it shall use the unsolicited result code <code class="docutils literal notranslate"><span class="pre">+BSIR</span></code> (Bluetooth Set In-band Ring tone) to notify the HF about the change.</p>
+<img alt="../../_images/2018071018.png" src="../../_images/2018071018.png" />
+<p>If the HF does not want to use the AG’s in-band ring tone, it may mute the Audio Connection after it has received <code class="docutils literal notranslate"><span class="pre">+CIEV:(callsetup=1)</span></code>. The HF shall un-mute the Audio Connection upon receiving the <code class="docutils literal notranslate"><span class="pre">+CIEV:(callsetup=0)</span></code> indication.</p>
+</div>
+</div>
+</div>
+<div class="section" id="reject-an-incoming-voice-call">
+<h2>Reject an incoming voice call<a class="headerlink" href="#reject-an-incoming-voice-call" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="reject-an-incoming-call-from-the-hf">
+<h3>Reject an Incoming Call from the HF<a class="headerlink" href="#reject-an-incoming-call-from-the-hf" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018071019.png" src="../../_images/2018071019.png" />
+</div>
+<div class="section" id="rejection-interruption-of-an-incoming-call-in-the-ag">
+<h3>Rejection/Interruption of an Incoming Call in the AG<a class="headerlink" href="#rejection-interruption-of-an-incoming-call-in-the-ag" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018071020.png" src="../../_images/2018071020.png" />
+</div>
+</div>
+<div class="section" id="terminate-a-call">
+<h2>Terminate a call<a class="headerlink" href="#terminate-a-call" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="terminate-a-call-process-from-the-hf">
+<h3>Terminate a Call Process from the HF<a class="headerlink" href="#terminate-a-call-process-from-the-hf" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018071021.png" src="../../_images/2018071021.png" />
+</div>
+<div class="section" id="terminate-a-call-process-from-the-ag">
+<h3>Terminate a Call Process from the AG<a class="headerlink" href="#terminate-a-call-process-from-the-ag" title="Permalink to this headline">¶</a></h3>
+<img alt="../../_images/2018071022.png" src="../../_images/2018071022.png" />
+</div>
+</div>
+<div class="section" id="audio-connection-transfer-during-an-ongoing-call">
+<h2>Audio Connection transfer during an ongoing call<a class="headerlink" href="#audio-connection-transfer-during-an-ongoing-call" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="place-a-call-with-a-phone-number-supplied-by-the-hf">
+<h2>Place a call with a phone number supplied by the HF<a class="headerlink" href="#place-a-call-with-a-phone-number-supplied-by-the-hf" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="place-a-call-using-memory-dialing">
+<h2>Place a call using memory dialing<a class="headerlink" href="#place-a-call-using-memory-dialing" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="place-a-call-to-the-last-number-dialed">
+<h2>Place a call to the last number dialed<a class="headerlink" href="#place-a-call-to-the-last-number-dialed" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="call-waiting-notification">
+<h2>Call waiting notification<a class="headerlink" href="#call-waiting-notification" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="three-way-calling">
+<h2>Three-way calling<a class="headerlink" href="#three-way-calling" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="calling-line-identification-cli">
+<h2>Calling Line Identification (CLI)<a class="headerlink" href="#calling-line-identification-cli" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="echo-canceling-ec-and-noise-reduction-nr">
+<h2>Echo canceling (EC) and noise reduction (NR)<a class="headerlink" href="#echo-canceling-ec-and-noise-reduction-nr" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="voice-recognition-activation">
+<h2>Voice recognition activation<a class="headerlink" href="#voice-recognition-activation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="attach-a-phone-number-to-a-voice-tag">
+<h2>Attach a Phone number to a voice tag<a class="headerlink" href="#attach-a-phone-number-to-a-voice-tag" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="ability-to-transmit-dtmf-codes">
+<h2>Ability to transmit DTMF codes<a class="headerlink" href="#ability-to-transmit-dtmf-codes" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="remote-audio-volume-control">
+<h2>Remote audio volume control<a class="headerlink" href="#remote-audio-volume-control" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="respond-and-hold">
+<h2>Respond and Hold<a class="headerlink" href="#respond-and-hold" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="subscriber-number-information">
+<h2>Subscriber Number Information<a class="headerlink" href="#subscriber-number-information" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="enhanced-call-status">
+<h2>Enhanced Call Status<a class="headerlink" href="#enhanced-call-status" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="enhanced-call-controls">
+<h2>Enhanced Call Controls<a class="headerlink" href="#enhanced-call-controls" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="individual-indicator-activation">
+<h2>Individual Indicator Activation<a class="headerlink" href="#individual-indicator-activation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="wide-band-speech">
+<h2>Wide Band Speech<a class="headerlink" href="#wide-band-speech" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="codec-negotiation">
+<h2>Codec Negotiation<a class="headerlink" href="#codec-negotiation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="hf-indicators">
+<h2>HF Indicators<a class="headerlink" href="#hf-indicators" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../code/index.html" class="btn btn-neutral float-right" title="HFP Code Analysis Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="app.html" class="btn btn-neutral" title="Application Layer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

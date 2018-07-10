@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>HFP Specification Learning Notes &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Introduction" href="intro.html" />
+    <link rel="prev" title="HFP Learning Notes" href="../index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">HFP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HFP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">HFP Code Analysis Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../case/index.html">HFP Case Studies</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">HFP Learning Notes</a> &raquo;</li>
+        
+      <li>HFP Specification Learning Notes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/hfp/spec/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hfp-specification-learning-notes">
+<h1>HFP Specification Learning Notes<a class="headerlink" href="#hfp-specification-learning-notes" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#profile-dependencies">Profile Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Profile Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#protocol-stack">Protocol Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#configuration-and-roles">Configuration and Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#user-requirements-and-scenarios">User Requirements and Scenarios</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="app.html">Application Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interop.html">Hands-Free Control Interoperability Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#connection-management">Connection management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#service-level-connection-establishment">Service Level Connection Establishment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#service-level-connection-initialization">Service Level Connection Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#link-loss-recovery">Link Loss Recovery</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#service-level-connection-release">Service Level Connection Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#phone-status-information">Phone status information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#transfer-of-registration-status">Transfer of Registration Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#transfer-of-signal-strength-indication">Transfer of Signal Strength Indication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#transfer-of-roaming-status-indication">Transfer of Roaming Status Indication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#transfer-of-battery-level-indication-of-ag">Transfer of Battery Level Indication of AG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#query-operator-selection">Query Operator Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#report-extended-audio-gateway-error-results-code">Report Extended Audio Gateway Error Results Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#transfer-of-call-call-setup-and-held-call-status">Transfer of Call, Call Setup, and Held Call Status</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#transfer-of-call-status">Transfer of Call Status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#transfer-of-callheld-status">Transfer of Callheld Status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#indication-of-status-for-held-calls">Indication of Status for Held Calls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#audio-connection-handling">Audio Connection handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#audio-connection-set-up">Audio Connection set up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#audio-connection-release">Audio Connection release</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#codec-connection-set-up">Codec Connection set up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#accept-an-incoming-voice-call">Accept an incoming voice call</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#answer-an-incoming-call">Answer an incoming call</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#answer-incoming-call-from-the-hf-in-band-ringing">Answer Incoming Call from the HF – In-Band Ringing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#answer-incoming-call-from-the-hf-no-in-band-ringing">Answer Incoming Call from the HF – No In-Band Ringing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#answer-incoming-call-from-the-ag">Answer Incoming Call from the AG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interop.html#change-the-in-band-ring-tone-setting">Change the In-Band Ring Tone Setting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#reject-an-incoming-voice-call">Reject an incoming voice call</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#reject-an-incoming-call-from-the-hf">Reject an Incoming Call from the HF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#rejection-interruption-of-an-incoming-call-in-the-ag">Rejection/Interruption of an Incoming Call in the AG</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#terminate-a-call">Terminate a call</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#terminate-a-call-process-from-the-hf">Terminate a Call Process from the HF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interop.html#terminate-a-call-process-from-the-ag">Terminate a Call Process from the AG</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#audio-connection-transfer-during-an-ongoing-call">Audio Connection transfer during an ongoing call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#place-a-call-with-a-phone-number-supplied-by-the-hf">Place a call with a phone number supplied by the HF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#place-a-call-using-memory-dialing">Place a call using memory dialing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#place-a-call-to-the-last-number-dialed">Place a call to the last number dialed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#call-waiting-notification">Call waiting notification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#three-way-calling">Three-way calling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#calling-line-identification-cli">Calling Line Identification (CLI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#echo-canceling-ec-and-noise-reduction-nr">Echo canceling (EC) and noise reduction (NR)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#voice-recognition-activation">Voice recognition activation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#attach-a-phone-number-to-a-voice-tag">Attach a Phone number to a voice tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#ability-to-transmit-dtmf-codes">Ability to transmit DTMF codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#remote-audio-volume-control">Remote audio volume control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#respond-and-hold">Respond and Hold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#subscriber-number-information">Subscriber Number Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#enhanced-call-status">Enhanced Call Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#enhanced-call-controls">Enhanced Call Controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#individual-indicator-activation">Individual Indicator Activation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#wide-band-speech">Wide Band Speech</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#codec-negotiation">Codec Negotiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interop.html#hf-indicators">HF Indicators</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="intro.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="HFP Learning Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
