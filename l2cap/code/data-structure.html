@@ -228,7 +228,7 @@
 </pre></div>
 </div>
 <ul>
-<li><p class="first">l2cap_trace_level</p>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">l2cap_trace_level</span></code></p>
 <p>log debug level.  use <cite>L2CA_SetTraceLevel</cite> to set it’s value,
 in <cite>l2c_init1</cite>, the default value is set as follows:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#if defined(L2CAP_INITIAL_TRACE_LEVEL)</span>
@@ -238,6 +238,162 @@ in <cite>l2c_init1</cite>, the default value is set as follows:</p>
 <span class="cp">#endif</span>
 </pre></div>
 </div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">controller_xmit_window</span></code></p>
+<p>Total ACL window for all links. it’s the controller buffer size(window).
+if its value is zero, it means the controller window is full, then host can’t send packest to the controller.</p>
+<p>it’s value mean that how many packets doest the host can transmit to the controller.</p>
+<p>this value is initialized when receiving “Controller Buffer Size” event.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/*******************************************************************************</span>
+<span class="cm"> *</span>
+<span class="cm"> * Function         l2c_link_processs_num_bufs</span>
+<span class="cm"> *</span>
+<span class="cm"> * Description      This function is called when a &quot;controller buffer size&quot;</span>
+<span class="cm"> *                  event is first received from the controller. It updates</span>
+<span class="cm"> *                  the L2CAP values.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Returns          void</span>
+<span class="cm"> *</span>
+<span class="cm"> ******************************************************************************/</span>
+ <span class="kt">void</span> <span class="nf">l2c_link_processs_num_bufs</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">num_lm_acl_bufs</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">l2cb</span><span class="p">.</span><span class="n">num_lm_acl_bufs</span> <span class="o">=</span> <span class="n">l2cb</span><span class="p">.</span><span class="n">controller_xmit_window</span> <span class="o">=</span> <span class="n">num_lm_acl_bufs</span><span class="p">;</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>this value is updated when receiving <strong>Number of Completed Packets Event</strong>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">l2c_link_process_num_completed_pkts</span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+  <span class="n">l2cb</span><span class="p">.</span><span class="n">controller_xmit_window</span> <span class="o">+=</span> <span class="n">num_sent</span><span class="p">;</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">round_robin_quota</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">round_robin_unacked</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">check_round_robin</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">round_robin_quota</span></code> is total usable controller buffer when each low priority link cannot have at least one buffer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">round_robin_uacked</span></code> is the total packets sent  out but  not acked by controller, this  value will  be updated in <code class="docutils literal notranslate"><span class="pre">l2c_link_process_num_completed_pkts</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">check_round_robin</span></code> is set true when we were doing round-robin for low priority links.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_cong_cback_context</span></code></p>
+<p>control if we can sent the packets to the controller now.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">lcb_pool</span></code></p>
+<p>Link Control Block pool, we can always iterate all the existing link through the following code snippets:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">p_lcb</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">l2cb</span><span class="p">.</span><span class="n">lcb_pool</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="n">MAX_L2CAP_LINKS</span><span class="p">;</span> <span class="n">ii</span><span class="o">++</span><span class="p">,</span> <span class="n">p_lcb</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">p_lcb</span><span class="o">-&gt;</span><span class="n">in_use</span><span class="p">)</span> <span class="p">{</span>
+     <span class="p">...</span>
+  <span class="p">}</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ccb_pool</span></code></p>
+<p>Channel Control Block pool. this  array will hold all the channel control blocks. the maxize is 20.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Put all the channel control blocks on the free queue */</span>
+ <span class="k">for</span> <span class="p">(</span><span class="n">xx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">xx</span> <span class="o">&lt;</span> <span class="n">MAX_L2CAP_CHANNELS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">xx</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">l2cb</span><span class="p">.</span><span class="n">ccb_pool</span><span class="p">[</span><span class="n">xx</span><span class="p">].</span><span class="n">p_next_ccb</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">l2cb</span><span class="p">.</span><span class="n">ccb_pool</span><span class="p">[</span><span class="n">xx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">rcb_pool</span></code></p>
+<p>Registration info pool. when an <code class="docutils literal notranslate"><span class="pre">L2CA_Register</span></code> called, it will allocate one element for it.
+this arrays hold an element for every PSM currently registered to the L2CAP layer.</p>
+<p>The maximum number of simultaneous applications(ER/EDR) that can register with L2CAP is MAX_L2CAP_CLIENTS(19)</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_free_ccb_first</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_free_ccb_last</span></code></p>
+<p>this is the shortcut to find a free CCB,  it also maintain the list of free CCB.</p>
+<p>see <code class="docutils literal notranslate"><span class="pre">l2cu_allocate_ccb</span></code> and <code class="docutils literal notranslate"><span class="pre">l2cu_release_ccb</span></code>.</p>
+<p>at <code class="docutils literal notranslate"><span class="pre">l2c_init()</span></code>, it’s initialized as follows:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">l2cb</span><span class="p">.</span><span class="n">p_free_ccb_first</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">l2cb</span><span class="p">.</span><span class="n">ccb_pool</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="n">l2cb</span><span class="p">.</span><span class="n">p_free_ccb_last</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">l2cb</span><span class="p">.</span><span class="n">ccb_pool</span><span class="p">[</span><span class="n">MAX_L2CAP_CHANNELS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">desire_role</span></code></p>
+<p>desire to be master/slave when accepting a connection. generally, the device who initialize a connection will be the master.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">disallow_switch</span></code></p>
+<p>default to set to <code class="docutils literal notranslate"><span class="pre">false</span></code>. wether to allow switch at create conn.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">num_lm_acl_bufs</span></code></p>
+<p>the number of the ACL buffers on controller. <code class="docutils literal notranslate"><span class="pre">controller_xmit_window</span></code> should never exceed this value.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">idle_timeout</span></code></p>
+<p>The number of seconds of link inactivity before a link is disconnected.initilized during <code class="docutils literal notranslate"><span class="pre">l2c_init()</span></code>, the default value is 4s.</p>
+<p>use <code class="docutils literal notranslate"><span class="pre">L2CA_SetIdleTimeout()</span></code> to change the default value.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">rcv_pending_q</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">receive_hold_timer</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">rcv_pending_q</span></code> is a queue for holding any L2CAP packets that arrived before the HCI Complete Event arrived.</p>
+<p><code class="docutils literal notranslate"><span class="pre">receive_holder_timer</span></code> is a timer for processing the packets in the above queue.</p>
+<p>both vars are initialzed during <code class="docutils literal notranslate"><span class="pre">l2c_init()</span></code>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_cur_hcit_lcb</span></code></p>
+<p>Current HCI Transport buffer.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">num_links_active</span></code></p>
+<p>Number of links active. updated when <code class="docutils literal notranslate"><span class="pre">l2cu_allocate_lcb</span></code> and <code class="docutils literal notranslate"><span class="pre">l2cu_release_lcb</span></code>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">non_flushable_pbf</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_flush_active</span></code></p>
+<p>these two vars are related to l2cap flush setting.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fixed_reg</span></code></p>
+<p>Reg info for fixed channels</p>
+<p>using <code class="docutils literal notranslate"><span class="pre">L2CA_RegisterFixedChannel</span></code> and <code class="docutils literal notranslate"><span class="pre">L2CA_RemoveFixedChnl</span></code> to add and remove fixed channel registration.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">num_ble_links_active</span></code></p>
+<p>Number of LE links active. updated when <code class="docutils literal notranslate"><span class="pre">l2cu_allocate_lcb</span></code> and <code class="docutils literal notranslate"><span class="pre">l2cu_release_lcb</span></code>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_ble_connecting</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_connecting_bda</span></code></p>
+<p>state for ble connection progress and the remote device address we’re going to connect.</p>
+<p>refer to <code class="docutils literal notranslate"><span class="pre">l2cble_init_direct_conn</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">controller_le_xmit_window</span></code></p>
+<p>tramsmit window for LE links.</p>
+<p>LE Fixed Channel Mask which shows what fixed channels support by the DUT.</p>
+<p>during <code class="docutils literal notranslate"><span class="pre">l2c_init</span></code>, we have the following settings:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">l2cb</span><span class="p">.</span><span class="n">l2c_ble_fixed_chnls_mask</span> <span class="o">=</span> <span class="n">L2CAP_FIXED_CHNL_ATT_BIT</span> <span class="o">|</span>
+             <span class="n">L2CAP_FIXED_CHNL_BLE_SIG_BIT</span> <span class="o">|</span>
+             <span class="n">L2CAP_FIXED_CHNL_SMP_BIT</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">num_lm_ble_bufs</span></code></p>
+<p>ACL buffers on controller for LE device.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_round_robin_quota</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_round_robin_unacked</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_check_round_robin</span></code></p>
+<p>vars for ajusting ble link quota.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_rcb_pool</span></code></p>
+<p>Registration info pool for connected ble application, The maximum number of simultaneous applications that can register with LE L2CAP
+is <strong>BLE_MAX_L2CAP_CLIENTS(15)</strong>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_echo_data_cb</span></code></p>
+<p>pointer to the callback for echo request.</p>
+<p>Hihger layer application can send echo request to the peer device with specific data,
+this callback will be called when peer send echo response to the DUT.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">high_pri_min_xmit_quota</span></code></p>
+<p>if Number of ACL buffers to use high priority channel is configurable, this value can be adjusted dynmamically,
+its initial value is <strong>L2CAP_HIGH_PRI_MIN_XMIT_QUOTA(5)</strong>.</p>
 </li>
 </ul>
 </div>

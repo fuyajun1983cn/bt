@@ -81,7 +81,7 @@ tL2C_CB
    } tL2C_CB;
 
 
-- l2cap_trace_level
+- ``l2cap_trace_level``
 
   log debug level.  use `L2CA_SetTraceLevel` to set it's value,
   in `l2c_init1`, the default value is set as follows:
@@ -93,3 +93,197 @@ tL2C_CB
      #else
        l2cb.l2cap_trace_level = BT_TRACE_LEVEL_NONE; /* No traces */
      #endif
+
+- ``controller_xmit_window``
+
+  Total ACL window for all links. it's the controller buffer size(window).
+  if its value is zero, it means the controller window is full, then host can't send packest to the controller.
+
+  it's value mean that how many packets doest the host can transmit to the controller.
+
+  this value is initialized when receiving "Controller Buffer Size" event.
+
+  .. code-block:: c++
+
+     /*******************************************************************************
+      *
+      * Function         l2c_link_processs_num_bufs
+      *
+      * Description      This function is called when a "controller buffer size"
+      *                  event is first received from the controller. It updates
+      *                  the L2CAP values.
+      *
+      * Returns          void
+      *
+      ******************************************************************************/
+      void l2c_link_processs_num_bufs(uint16_t num_lm_acl_bufs) {
+        l2cb.num_lm_acl_bufs = l2cb.controller_xmit_window = num_lm_acl_bufs;
+      }
+
+  this value is updated when receiving **Number of Completed Packets Event**.
+
+  .. code-block:: c++
+
+     void l2c_link_process_num_completed_pkts(uint8_t* p) {
+       ...
+       l2cb.controller_xmit_window += num_sent;
+       ...
+     }
+
+- ``round_robin_quota``
+- ``round_robin_unacked``
+- ``check_round_robin``
+
+  ``round_robin_quota`` is total usable controller buffer when each low priority link cannot have at least one buffer.
+
+  ``round_robin_uacked`` is the total packets sent  out but  not acked by controller, this  value will  be updated in ``l2c_link_process_num_completed_pkts``.
+
+  ``check_round_robin`` is set true when we were doing round-robin for low priority links.
+
+- ``is_cong_cback_context``
+
+  control if we can sent the packets to the controller now.
+
+- ``lcb_pool``
+
+  Link Control Block pool, we can always iterate all the existing link through the following code snippets:
+
+  .. code-block:: c++
+
+    p_lcb = &l2cb.lcb_pool[0];
+    for (ii = 0; ii < MAX_L2CAP_LINKS; ii++, p_lcb++) {
+      if (p_lcb->in_use) {
+         ...
+      }
+      ...
+    }
+
+- ``ccb_pool``
+
+  Channel Control Block pool. this  array will hold all the channel control blocks. the maxize is 20.
+
+  .. code-block:: c++
+
+       /* Put all the channel control blocks on the free queue */
+        for (xx = 0; xx < MAX_L2CAP_CHANNELS - 1; xx++) {
+          l2cb.ccb_pool[xx].p_next_ccb = &l2cb.ccb_pool[xx + 1];
+        }
+     
+- ``rcb_pool``
+
+  Registration info pool. when an ``L2CA_Register`` called, it will allocate one element for it.
+  this arrays hold an element for every PSM currently registered to the L2CAP layer.
+
+  The maximum number of simultaneous applications(ER/EDR) that can register with L2CAP is MAX_L2CAP_CLIENTS(19)
+
+- ``p_free_ccb_first``
+- ``p_free_ccb_last``
+
+  this is the shortcut to find a free CCB,  it also maintain the list of free CCB.
+
+  see ``l2cu_allocate_ccb`` and ``l2cu_release_ccb``.
+
+  at ``l2c_init()``, it's initialized as follows:
+
+  .. code-block:: c++
+
+       l2cb.p_free_ccb_first = &l2cb.ccb_pool[0];
+       l2cb.p_free_ccb_last = &l2cb.ccb_pool[MAX_L2CAP_CHANNELS - 1];
+  
+- ``desire_role``
+
+  desire to be master/slave when accepting a connection. generally, the device who initialize a connection will be the master.
+
+- ``disallow_switch``
+
+  default to set to ``false``. wether to allow switch at create conn.
+
+- ``num_lm_acl_bufs``
+
+  the number of the ACL buffers on controller. ``controller_xmit_window`` should never exceed this value. 
+  
+- ``idle_timeout``
+
+  The number of seconds of link inactivity before a link is disconnected.initilized during ``l2c_init()``, the default value is 4s. 
+
+  use ``L2CA_SetIdleTimeout()`` to change the default value.
+
+- ``rcv_pending_q``
+- ``receive_hold_timer``
+
+  ``rcv_pending_q`` is a queue for holding any L2CAP packets that arrived before the HCI Complete Event arrived.
+
+  ``receive_holder_timer`` is a timer for processing the packets in the above queue.
+
+  both vars are initialzed during ``l2c_init()``. 
+
+- ``p_cur_hcit_lcb``
+
+  Current HCI Transport buffer.
+
+- ``num_links_active``
+
+  Number of links active. updated when ``l2cu_allocate_lcb`` and ``l2cu_release_lcb``.
+
+- ``non_flushable_pbf``
+- ``is_flush_active``
+
+  these two vars are related to l2cap flush setting.
+
+- ``fixed_reg``
+
+  Reg info for fixed channels
+
+  using ``L2CA_RegisterFixedChannel`` and ``L2CA_RemoveFixedChnl`` to add and remove fixed channel registration.
+
+- ``num_ble_links_active``
+
+  Number of LE links active. updated when ``l2cu_allocate_lcb`` and ``l2cu_release_lcb``.
+
+- ``is_ble_connecting``
+- ``ble_connecting_bda``
+
+  state for ble connection progress and the remote device address we're going to connect.
+
+  refer to ``l2cble_init_direct_conn``
+
+- ``controller_le_xmit_window``
+
+  tramsmit window for LE links.
+
+  LE Fixed Channel Mask which shows what fixed channels support by the DUT.
+
+  during ``l2c_init``, we have the following settings:
+
+  .. code-block:: c++
+
+     l2cb.l2c_ble_fixed_chnls_mask = L2CAP_FIXED_CHNL_ATT_BIT |
+                  L2CAP_FIXED_CHNL_BLE_SIG_BIT |
+                  L2CAP_FIXED_CHNL_SMP_BIT;
+
+- ``num_lm_ble_bufs``
+
+  ACL buffers on controller for LE device.
+
+- ``ble_round_robin_quota``
+- ``ble_round_robin_unacked``
+- ``ble_check_round_robin``
+
+  vars for ajusting ble link quota.
+
+- ``ble_rcb_pool``
+
+  Registration info pool for connected ble application, The maximum number of simultaneous applications that can register with LE L2CAP
+  is **BLE_MAX_L2CAP_CLIENTS(15)**.
+
+- ``p_echo_data_cb``
+
+  pointer to the callback for echo request.
+  
+  Hihger layer application can send echo request to the peer device with specific data,
+  this callback will be called when peer send echo response to the DUT. 
+
+- ``high_pri_min_xmit_quota``
+
+  if Number of ACL buffers to use high priority channel is configurable, this value can be adjusted dynmamically,
+  its initial value is **L2CAP_HIGH_PRI_MIN_XMIT_QUOTA(5)**. 
