@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="HFP Learning Notes" href="../../hfp/index.html" />
+    <link rel="next" title="L2CAP API for Higher Layers" href="api.html" />
     <link rel="prev" title="Code Architecture Analysis" href="index.html" /> 
 
   
@@ -81,7 +81,9 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Code Architecture Analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hfp/index.html">HFP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../a2dp/index.html">A2DP Learning Notes</a></li>
 </ul>
 
             
@@ -397,6 +399,230 @@ its initial value is <strong>L2CAP_HIGH_PRI_MIN_XMIT_QUOTA(5)</strong>.</p>
 </li>
 </ul>
 </div>
+<div class="section" id="tl2c-lcb">
+<h2>tL2C_LCB<a class="headerlink" href="#tl2c-lcb" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define a link control block. There is one link control block between</span>
+<span class="cm"> * this device and any other device (i.e. BD ADDR).</span>
+<span class="cm">*/</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">t_l2c_linkcb</span> <span class="p">{</span>
+  <span class="kt">bool</span> <span class="n">in_use</span><span class="p">;</span> <span class="cm">/* true when in use, false when not */</span>
+  <span class="n">tL2C_LINK_STATE</span> <span class="n">link_state</span><span class="p">;</span>
+
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">l2c_lcb_timer</span><span class="p">;</span> <span class="cm">/* Timer entry for timeout evt */</span>
+  <span class="kt">uint16_t</span> <span class="n">handle</span><span class="p">;</span>        <span class="cm">/* The handle used with LM */</span>
+
+  <span class="n">tL2C_CCB_Q</span> <span class="n">ccb_queue</span><span class="p">;</span> <span class="cm">/* Queue of CCBs on this LCB */</span>
+
+  <span class="n">tL2C_CCB</span><span class="o">*</span> <span class="n">p_pending_ccb</span><span class="p">;</span>  <span class="cm">/* ccb of waiting channel during link disconnect */</span>
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">info_resp_timer</span><span class="p">;</span> <span class="cm">/* Timer entry for info resp timeout evt */</span>
+  <span class="n">RawAddress</span> <span class="n">remote_bd_addr</span><span class="p">;</span> <span class="cm">/* The BD address of the remote */</span>
+
+  <span class="kt">uint8_t</span> <span class="n">link_role</span><span class="p">;</span> <span class="cm">/* Master or slave */</span>
+  <span class="kt">uint8_t</span> <span class="n">id</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">cur_echo_id</span><span class="p">;</span>              <span class="cm">/* Current id value for echo request */</span>
+  <span class="n">tL2CA_ECHO_RSP_CB</span><span class="o">*</span> <span class="n">p_echo_rsp_cb</span><span class="p">;</span> <span class="cm">/* Echo response callback */</span>
+  <span class="kt">uint16_t</span> <span class="n">idle_timeout</span><span class="p">;</span>            <span class="cm">/* Idle timeout */</span>
+  <span class="kt">bool</span> <span class="n">is_bonding</span><span class="p">;</span>                  <span class="cm">/* True - link active only for bonding */</span>
+
+  <span class="kt">uint16_t</span> <span class="n">link_flush_tout</span><span class="p">;</span> <span class="cm">/* Flush timeout used */</span>
+
+  <span class="kt">uint16_t</span> <span class="n">link_xmit_quota</span><span class="p">;</span> <span class="cm">/* Num outstanding pkts allowed */</span>
+  <span class="kt">uint16_t</span> <span class="n">sent_not_acked</span><span class="p">;</span>  <span class="cm">/* Num packets sent but not acked */</span>
+
+  <span class="kt">bool</span> <span class="n">partial_segment_being_sent</span><span class="p">;</span> <span class="cm">/* Set true when a partial segment */</span>
+                                   <span class="cm">/* is being sent. */</span>
+  <span class="kt">bool</span> <span class="n">w4_info_rsp</span><span class="p">;</span>                <span class="cm">/* true when info request is active */</span>
+  <span class="kt">uint8_t</span> <span class="n">info_rx_bits</span><span class="p">;</span>            <span class="cm">/* set 1 if received info type */</span>
+  <span class="kt">uint32_t</span> <span class="n">peer_ext_fea</span><span class="p">;</span>           <span class="cm">/* Peer&#39;s extended features mask */</span>
+  <span class="n">list_t</span><span class="o">*</span> <span class="n">link_xmit_data_q</span><span class="p">;</span>        <span class="cm">/* Link transmit data buffer queue */</span>
+
+  <span class="kt">uint8_t</span> <span class="n">peer_chnl_mask</span><span class="p">[</span><span class="n">L2CAP_FIXED_CHNL_ARRAY_SIZE</span><span class="p">];</span>
+<span class="cp">#if (L2CAP_UCD_INCLUDED == TRUE)</span>
+  <span class="kt">uint16_t</span> <span class="n">ucd_mtu</span><span class="p">;</span> <span class="cm">/* peer MTU on UCD */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span>
+      <span class="n">ucd_out_sec_pending_q</span><span class="p">;</span> <span class="cm">/* Security pending outgoing UCD packet */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span>
+      <span class="n">ucd_in_sec_pending_q</span><span class="p">;</span> <span class="cm">/* Security pending incoming UCD packet */</span>
+<span class="cp">#endif</span>
+
+  <span class="n">BT_HDR</span><span class="o">*</span> <span class="n">p_hcit_rcv_acl</span><span class="p">;</span>   <span class="cm">/* Current HCIT ACL buf being rcvd */</span>
+  <span class="kt">uint16_t</span> <span class="n">idle_timeout_sv</span><span class="p">;</span> <span class="cm">/* Save current Idle timeout */</span>
+  <span class="kt">uint8_t</span> <span class="n">acl_priority</span><span class="p">;</span>     <span class="cm">/* L2C_PRIORITY_NORMAL or L2C_PRIORITY_HIGH */</span>
+  <span class="n">tL2CA_NOCP_CB</span><span class="o">*</span> <span class="n">p_nocp_cb</span><span class="p">;</span> <span class="cm">/* Num Cmpl pkts callback */</span>
+
+<span class="cp">#if (L2CAP_NUM_FIXED_CHNLS &gt; 0)</span>
+  <span class="n">tL2C_CCB</span><span class="o">*</span> <span class="n">p_fixed_ccbs</span><span class="p">[</span><span class="n">L2CAP_NUM_FIXED_CHNLS</span><span class="p">];</span>
+  <span class="kt">uint16_t</span> <span class="n">disc_reason</span><span class="p">;</span>
+<span class="cp">#endif</span>
+
+  <span class="n">tBT_TRANSPORT</span> <span class="n">transport</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">initiating_phys</span><span class="p">;</span>  <span class="c1">// LE PHY used for connection initiation</span>
+  <span class="n">tBLE_ADDR_TYPE</span> <span class="n">ble_addr_type</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">tx_data_len</span><span class="p">;</span> <span class="cm">/* tx data length used in data length extension */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span> <span class="n">le_sec_pending_q</span><span class="p">;</span> <span class="cm">/* LE coc channels waiting for security check</span>
+<span class="cm">                                      completion */</span>
+  <span class="kt">uint8_t</span> <span class="n">sec_act</span><span class="p">;</span>
+<span class="cp">#define L2C_BLE_CONN_UPDATE_DISABLE \</span>
+<span class="cp">  0x1                              </span><span class="cm">/* disable update connection parameters */</span><span class="cp"></span>
+<span class="cp">#define L2C_BLE_NEW_CONN_PARAM 0x2 </span><span class="cm">/* new connection parameter to be set */</span><span class="cp"></span>
+<span class="cp">#define L2C_BLE_UPDATE_PENDING                  \</span>
+<span class="cp">  0x4 </span><span class="cm">/* waiting for connection update finished \</span>
+<span class="cm">         */</span><span class="cp"></span>
+<span class="cp">#define L2C_BLE_NOT_DEFAULT_PARAM \</span>
+<span class="cp">  0x8 </span><span class="cm">/* not using default connection parameters */</span><span class="cp"></span>
+  <span class="kt">uint8_t</span> <span class="n">conn_update_mask</span><span class="p">;</span>
+
+  <span class="kt">uint16_t</span> <span class="n">min_interval</span><span class="p">;</span> <span class="cm">/* parameters as requested by peripheral */</span>
+  <span class="kt">uint16_t</span> <span class="n">max_interval</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">latency</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">timeout</span><span class="p">;</span>
+
+<span class="cp">#if (L2CAP_ROUND_ROBIN_CHANNEL_SERVICE == TRUE)</span>
+  <span class="cm">/* each priority group is limited burst transmission */</span>
+  <span class="cm">/* round robin service for the same priority channels */</span>
+  <span class="n">tL2C_RR_SERV</span> <span class="n">rr_serv</span><span class="p">[</span><span class="n">L2CAP_NUM_CHNL_PRIORITY</span><span class="p">];</span>
+  <span class="kt">uint8_t</span> <span class="n">rr_pri</span><span class="p">;</span> <span class="cm">/* current serving priority group */</span>
+<span class="cp">#endif</span>
+
+<span class="p">}</span> <span class="n">tL2C_LCB</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">in_use</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">link_state</span></code></p>
+<p>the max number of the link is <strong>MAX_L2CAP_LINKS(7)</strong>, for every link, there is an array element(<strong>lcb_pool</strong>) for it.
+if it’s allocated, <em>in_use</em> will be set to true.</p>
+<p>the <em>link_state</em> can be the one of the following:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the possible L2CAP link states</span>
+<span class="cm">*/</span>
+<span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+  <span class="n">LST_DISCONNECTED</span><span class="p">,</span>
+  <span class="n">LST_CONNECT_HOLDING</span><span class="p">,</span>
+  <span class="n">LST_CONNECTING_WAIT_SWITCH</span><span class="p">,</span>
+  <span class="n">LST_CONNECTING</span><span class="p">,</span>
+  <span class="n">LST_CONNECTED</span><span class="p">,</span>
+  <span class="n">LST_DISCONNECTING</span>
+<span class="p">}</span> <span class="n">tL2C_LINK_STATE</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">l2c_lcb_timer</span></code></p>
+<p>Timer entry for timeout evt for a link.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">handle</span></code></p>
+<blockquote>
+<div><p>used with LM. handle identify a l2cap link between local DUT with the remote device. handle value(0xedc) is specific for SoC debug loggin.</p>
+<p>handle value is returned from controller.  when the HCI Connection Complete event is received from the controller,
+it will return the handle value to the upper layer and save it to this var.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ccb_queue</span></code></p>
+<p>Queue of CCBs on this LCB. often use the following code snippets to iterate CCB on it:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="n">p_ccb</span> <span class="o">=</span> <span class="n">p_lcb</span><span class="o">-&gt;</span><span class="n">ccb_queue</span><span class="p">.</span><span class="n">p_first_ccb</span><span class="p">;</span> <span class="n">p_ccb</span><span class="p">;</span> <span class="n">p_ccb</span> <span class="o">=</span> <span class="n">p_ccb</span><span class="o">-&gt;</span><span class="n">p_next_ccb</span><span class="p">)</span> <span class="p">{</span>
+   <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_pending_ccb</span></code></p>
+<p>ccb of waiting channel during link disconnect. after disconnection complete, we can restart the channel for CCB.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">info_resp_timer</span></code></p>
+<p>Timer entry for info resp timeout evt.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">remote_bd_addr</span></code></p>
+<p>The BD address of the remote in this link.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">link_role</span></code></p>
+<p>the DUT’s role in this link.  Master or Slave.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">id</span></code></p>
+<p>this is the identifier value for every l2cap request/response on signaling channel between local DUT and remote device.</p>
+<p>this value should be the same for each request and response pair. this value should not be 0.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">cur_echo_id</span></code></p>
+<p>Current id value for echo request.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_echo_rsp_cb</span></code></p>
+<p>Echo response callback.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">idle_timeout</span></code></p>
+<p>timeout value for Idle timeout.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">idle_timeout</span></code></p>
+<p>use this <code class="docutils literal notranslate"><span class="pre">L2CA_SetIdleTimeout</span></code> to update this value.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_bonding</span></code></p>
+<p>when this value is true, it means this link is only active for bonding.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">link_flush_tout</span></code></p>
+<p>Flush timeout used. use <code class="docutils literal notranslate"><span class="pre">L2CA_SetFlushTimeout</span></code> to update it.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">link_xmit_quota</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">sent_not_acked</span></code></p>
+<p>Num outstanding pkts allowed  and Num packets sent but not acked.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">partial_segment_being_sent</span></code></p>
+<p>Set true when a partial segment is being sent.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">w4_info_rsp</span></code></p>
+<p>true when info request is active.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">info_rx_bits</span></code></p>
+<p>set to 1 for received info type.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_ext_fea</span></code></p>
+<p>hold peer’s extended feature mask.</p>
+<img alt="../../_images/2018071501.png" src="../../_images/2018071501.png" />
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_chnl_mask</span></code></p>
+<p>peer supported fixed channel type.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ucd_mtu</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ucd_out_sec_pending_q</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ucd_in_sec_pending_q</span></code></p>
+<p>Security pending outgoing/incoming UCD(Unicast Connectionless Data) packet.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_hcit_rcv_acl</span></code></p>
+<p>Current HCIT ACL buf being rcvd.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">idle_timeout_sv</span></code></p>
+<p>Save current Idle timeout.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">acl_priority</span></code></p>
+<p><strong>L2C_PRIORITY_NORMAL</strong> or <strong>L2C_PRIORITY_HIGH</strong>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_nocp_cb</span></code></p>
+<p>callback for Number of Completed Packets.</p>
+<p>use <em>L2CA_RegForNoCPEvt</em> to register the callback.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_fixed_ccbs</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">disc_reason</span></code></p>
+<p>the number of the fixed channels is <strong>L2CAP_NUM_FIXED_CHNLS(32)</strong>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">transport</span></code></p>
+<p>transport type: LE or ED/EDR.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">initiating_phys</span></code></p>
+<p>LE PHY used for connection initiation.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_addr_type</span></code></p>
+<img alt="../../_images/2018071502.png" src="../../_images/2018071502.png" />
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">tx_data_len</span></code></p>
+<p>tx data length used in data length extension.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">le_sec_pending_q</span></code></p>
+<p>Queue for LE CoC(Connection Oriented Channel) channels waiting for security check completion.</p>
+<p>refer to <a class="reference external" href="https://blog.csdn.net/Wendell_Gong/article/details/54956499">https://blog.csdn.net/Wendell_Gong/article/details/54956499</a>.</p>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -407,7 +633,7 @@ its initial value is <strong>L2CAP_HIGH_PRI_MIN_XMIT_QUOTA(5)</strong>.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../hfp/index.html" class="btn btn-neutral float-right" title="HFP Learning Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api.html" class="btn btn-neutral float-right" title="L2CAP API for Higher Layers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Code Architecture Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Available AT-commands with Hands-Free Profile &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="HFP Code Analysis Notes" href="../code/index.html" />
+    <link rel="prev" title="Hands-Free Control Interoperability Requirements" href="interop.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">HFP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">HFP Specification Learning Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../code/index.html">HFP Code Analysis Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../case/index.html">HFP Case Studies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../a2dp/index.html">A2DP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">HFP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">HFP Specification Learning Notes</a> &raquo;</li>
+        
+      <li>Available AT-commands with Hands-Free Profile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/hfp/spec/at-cmd.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="available-at-commands-with-hands-free-profile">
+<h1>Available AT-commands with Hands-Free Profile<a class="headerlink" href="#available-at-commands-with-hands-free-profile" title="Permalink to this headline">¶</a></h1>
+<p>The AT commands and indications that are available for the Bluetooth Hands-Free profile are listed below.</p>
+<ul>
+<li><p class="first"><strong>ATA</strong></p>
+<p>Standard call answer AT command.</p>
+</li>
+<li><p class="first"><strong>ATDdd…dd;</strong></p>
+<p>Standard AT command intended for placing a call to a phone number. Only voice calls are covered in this
+specification.</p>
+</li>
+<li><p class="first"><strong>ATD&gt;nnn…;</strong></p>
+<p>Extension of the standard ATD command, intended for memory dialing. Only voice calls are covered in this
+specification.</p>
+</li>
+<li><p class="first"><strong>AT+CCWA</strong></p>
+<p>Standard “Call Waiting notification” AT command. Within the AT+CCWA=[&lt;n&gt;[,&lt;mode&gt;[,&lt;class&gt;]]]command,
+only enabling/disabling of the Call Waiting notification unsolicited result code +CCWA , using the &lt;n&gt;
+parameter, is covered in this specification.</p>
+</li>
+<li><p class="first"><strong>AT+CHLD</strong></p>
+<p>Standard call hold and multiparty handling AT command.</p>
+</li>
+<li><p class="first"><strong>AT+CHUP</strong></p>
+<p>Standard hang-up AT command. Execution command causes the AG to terminate the currently active call.
+This command shall have no impact on the state of any held call.</p>
+</li>
+<li><p class="first"><strong>AT+CIND</strong></p>
+<p>Standard indicator update AT command.</p>
+</li>
+<li><p class="first"><strong>+CIND</strong></p>
+<p>Standard list of current phone indicators.</p>
+</li>
+<li><p class="first"><strong>AT+CLCC</strong></p>
+<p>Standard list current calls command.</p>
+</li>
+<li><p class="first"><strong>+CLCC</strong></p>
+<p>Standard list current calls result code</p>
+</li>
+<li><p class="first"><strong>AT+COPS</strong></p>
+<p>The AT+COPS=3,0 shall be sent by the HF to the AG prior to sending the AT+COPS? command.
+AT+COPS=3,0 sets the format of the network operator string to the long format alphanumeric.</p>
+</li>
+<li><p class="first"><strong>AT+CMEE</strong></p>
+<p>Standard AT command used to enable the use of result code.</p>
+</li>
+<li><p class="first"><strong>AT+CLIP</strong></p>
+<p>Standard “Calling Line Identification notification” activation AT command. It enables/disables the Calling Line
+Identification notification unsolicited result code +CLIP.</p>
+</li>
+<li><p class="first"><strong>+CLIP</strong></p>
+<p>Standard “Calling Line Identification notification” unsolicited result code.</p>
+</li>
+<li><p class="first"><strong>AT+CMER</strong></p>
+<p>Standard event reporting activation/deactivation AT command.</p>
+</li>
+<li><p class="first"><strong>+CIEV</strong></p>
+<p>Standard “indicator events reporting” unsolicited result code.</p>
+</li>
+<li><p class="first"><strong>AT+VTS</strong></p>
+<p>Standard DTMF generation AT command. Only the AT+VTS=&lt;DTMF&gt; command format is covered in this
+specification.</p>
+</li>
+<li><p class="first"><strong>AT+CNUM</strong></p>
+<p>AT+CNUM (Retrieve Subscriber Number Information)</p>
+</li>
+<li><p class="first"><strong>+CNUM</strong></p>
+<p>Standard Response used for sending the “Subscriber Number Information” from AG to HF.</p>
+</li>
+<li><p class="first"><strong>AT+BIA</strong></p>
+<p>Bluetooth Indicators Activation. Command used by HF to activate / deactivate individual indicators.</p>
+</li>
+<li><p class="first"><strong>AT+BINP</strong></p>
+<p>Command used for requesting some specific data input from the AG4. On reception of this command the AG
+shall perform the proper actions such that the requested information is sent back to the HF using the +BINP
+response.</p>
+</li>
+<li><p class="first"><strong>+BINP</strong></p>
+<p>Command used for requesting some specific data input from the AG4. On reception of this command the AG
+shall perform the proper actions such that the requested information is sent back to the HF using the +BINP
+response.</p>
+</li>
+<li><p class="first"><strong>AT+BLDN</strong></p>
+<p>Bluetooth Last Dialed Number</p>
+</li>
+<li><p class="first"><strong>AT+BVRA</strong></p>
+<p>Bluetooth Voice Recognition Activation</p>
+</li>
+<li><p class="first"><strong>+BVRA</strong></p>
+<p>Bluetooth Voice Recognition Activation. Unsolicited result code used to notify the HF when the voice
+recognition function in the AG is activated/deactivated autonomously from the AG.</p>
+</li>
+<li><p class="first"><strong>AT+BRSF</strong></p>
+<p>(Bluetooth Retrieve Supported Features. Notifies the AG of the supported features available in the HF, and
+requests information about the supported features in the AG. The supported features shall be represented as
+a decimal value.</p>
+</li>
+<li><p class="first"><strong>+BRSF</strong></p>
+<p>Bluetooth Retrieve Supported Features).Result code sent by the AG in response to the AT+BRSF command,
+used to notify the HF what features are supported in the AG. The supported features shall be represented as
+a decimal value.</p>
+</li>
+<li><p class="first"><strong>AT+NREC</strong> (Noise Reduction and Echo Canceling)</p>
+<p>Command issued to disable any Echo Canceling and Noise Reduction functions embedded in the AG.
+Only support for execution command is mandated. Neither the read nor test commands are mandatory.</p>
+</li>
+<li><p class="first"><strong>AT+VGM</strong></p>
+<p>Gain of Microphone. Command issued by the HF to report its current microphone gain level setting to the AG.
+&lt;gain&gt; is a decimal numeric constant, relating to a particular (implementation dependent) volume level
+controlled by the HF. This command does not change the microphone gain of the AG; it simply indicates the
+current value of the microphone gain in the HF.</p>
+</li>
+<li><p class="first"><strong>AT+VGS</strong> (Gain of Speaker)</p>
+<p>Command issued by the HF to report its current speaker gain level setting to the AG. &lt;gain&gt; is a decimal
+numeric constant, relating to a particular (implementation dependent) volume level controlled by the HF. This
+command does not change the speaker gain of the AG; it simply indicates the current value of the speaker
+volume in the HF.</p>
+</li>
+<li><p class="first"><strong>+VGM</strong> (Gain of Microphone)</p>
+<p>Unsolicited result code issued by the AG to set the microphone gain of the HF. &lt;gain&gt; is a decimal numeric
+constant, relating to a particular (implementation dependent) volume level controlled by the HF.</p>
+</li>
+<li><p class="first"><strong>+VGS</strong> (Gain of Speaker)</p>
+<p>Unsolicited result code issued by the AG to set the speaker gain of the HF. &lt;gain&gt; is a decimal numeric
+constant, relating to a particular (implementation dependent) volume level controlled by the HF.</p>
+</li>
+<li><p class="first"><strong>++BSIR</strong> (Bluetooth Setting of In-band Ring tone)</p>
+<p>Unsolicited result code issued by the AG to indicate to the HF that the in-band ring tone setting has been
+locally changed. The HF may react accordingly by changing its own alert method.</p>
+</li>
+<li><p class="first"><strong>AT+BTRH</strong> (Bluetooth Response and Hold Feature)</p>
+<p>Command issued by the HF for the “Response and Hold” feature in the AG. This specification defines the use
+of the set and read command. The AT+BTRH? command shall be used by the HF to query the current
+“Response and Hold” state of the AG.</p>
+</li>
+<li><p class="first"><strong>+BTRH</strong> (Bluetooth Response and Hold Feature)</p>
+<p>Result code used to notify the HF when-ever the incoming call is either put on hold or accepted or rejected.
+The AG shall also respond back with this response for the AT+BTRH? command from the HF.</p>
+</li>
+</ul>
+<div class="section" id="phonebook-specific-at-commands">
+<h2>Phonebook specific AT commands<a class="headerlink" href="#phonebook-specific-at-commands" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>AT+CPBS=?</strong></p>
+<p>Lists the phonebooks that the phone contains. (Choose phonebook storage)</p>
+<p>Returns: +CPBS: (“ME”,”SM”,”MT”,”ON”,”DC”,”MC”,”RC”,”EN”,”AD”,”QD”,”SD”,”FD”)</p>
+<p>+CPBS=”ME” sets the “retrieve mode” to the internal phonebook.</p>
+<p>+CPBS=”SM” sets the “retrieve mode” to the SIM phonebook.</p>
+</li>
+<li><p class="first"><strong>AT+CPBR=?</strong></p>
+<p>Describes the phonebook selected above. (Simple) This gives the max number of entries the phone can
+contain. It also gives the maximum phone number (or email address) length and name length.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can substitute +MPBR for any +CPBR command, but the phone returns a much more specific
+(and less intelligible) response containing more fields that may act as internal “programming” flags of some
+sort</p>
+</div>
+<p>Returns: +CPBR: (1-1000),40,24</p>
+</li>
+<li><p class="first"><strong>AT+CPBR=[beginning index],[ending index]</strong></p>
+<p>Returns a list of numbers with the index between the two numbers entered. Also denotes what TYPE of
+phonebook entry was selected.</p>
+<p>Returns: +CPBR: 9,”18005555555”,129,”Contact Name” – 129 refers to a phone number.</p>
+<p>Returns: +CPBR: 18,”<a class="reference external" href="mailto:user&#37;&#52;&#48;domain&#46;net">user<span>&#64;</span>domain<span>&#46;</span>net</a>”,128,”Contact Name” – 128 refers to an email.</p>
+</li>
+<li><p class="first"><strong>AT+CPBR=[index]</strong></p>
+<p>Returns the specified index.</p>
+<p>Returns: +CPBR: 18,”<a class="reference external" href="mailto:user&#37;&#52;&#48;domain&#46;net">user<span>&#64;</span>domain<span>&#46;</span>net</a>”,128,”Contact Name”</p>
+</li>
+<li><p class="first"><strong>AT+MPBF=”Name”</strong></p>
+<p>Searches the phonebook for the Name or string.</p>
+</li>
+<li><p class="first"><strong>AT+MPBR=?</strong></p>
+<p>Similar to above, but a more verbose result is displayed.</p>
+<p>Returns: +MPBR: 1-1000,40,24,8,0-1,50,(0,2,4,6,9-30,255),(0),(0-1),(1-30),(255),25,(0-
+1,255),264,(0),0,0,0,0,0,0,0</p>
+<ul class="simple">
+<li>1-1000 denotes the number of entries that can be stored on the selected (+CPBS) phonebook.</li>
+<li>40 represents the number of characters that the email or phone number can have</li>
+<li>24 indicates the number of characters the “friendly” name can have.</li>
+<li>The 8 refers to the different “types” of phonebook entry (i.e. Mobile, Main, Email, Home, Fax, Work …
+etc).</li>
+<li>The +CPBR command does not list anything after the 24 (as seen above), so there are times when
+the +MPBR may be useful.</li>
+</ul>
+</li>
+<li><p class="first"><strong>AT+MPBR=[index]</strong></p>
+<p>Returns: +MPBR: 18,”<a class="reference external" href="mailto:user&#37;&#52;&#48;domain&#46;net">user<span>&#64;</span>domain<span>&#46;</span>net</a>”,128,”Contact</p>
+<p>Name”,6,0,255,0,0,1,255,255,0,”“,0,0,”“,”“,”“,”“,”“,”“,”“,”“</p>
+</li>
+</ul>
+</div>
+<div class="section" id="sms-specific-at-commands">
+<h2>SMS specific AT commands<a class="headerlink" href="#sms-specific-at-commands" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>AT+CMGF=1</strong></p>
+<p>This tells the phone to display the entries as text rather than binary. +CMFG=0 would display the data in
+binary format.</p>
+</li>
+<li><p class="first"><strong>AT+CPMS=?</strong></p>
+<p>This displays all of the locations in which the phone can save the SMS messages.</p>
+<p>Returns: +CPMS: (“MT”,”IM”,”OM”,”BM”,”DM”),(“OM”,”DM”),(“IM”)</p>
+</li>
+<li><p class="first"><strong>AT+CMGL=?</strong></p>
+<p>Returns the options on which messages you wish to display.</p>
+<p>Returns: +CMGL: (“REC UNREAD”, “REC READ”, “STO UNSENT”, “STO SENT”, “ALL”)</p>
+</li>
+<li><p class="first"><strong>AT+CMGL=”ALL”</strong></p>
+<p>Selects and displays all of the SMS messages on the selected source.</p>
+</li>
+<li><p class="first"><strong>AT#PMODE=1</strong></p>
+<p>In order to retrieve text messages and other information, Samsung phones must be in this mode.</p>
+</li>
+<li><p class="first"><strong>AT#PSRMR=?</strong></p>
+<p>Returns the parameters to obtain text messages (Samsung).</p>
+<p>Returns: #PSRMR: (0-349)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="apple-specific-at-commands-with-hands-free-profile">
+<h2>Apple specific AT commands with Hands-Free profile<a class="headerlink" href="#apple-specific-at-commands-with-hands-free-profile" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">HFP Command AT+XAPL</p>
+<p>Enables custom AT commands from a headset.</p>
+</li>
+<li><p class="first">HFP Command AT+IPHONEACCEV</p>
+<p>Reports a headset state change.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../code/index.html" class="btn btn-neutral float-right" title="HFP Code Analysis Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="interop.html" class="btn btn-neutral" title="Hands-Free Control Interoperability Requirements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

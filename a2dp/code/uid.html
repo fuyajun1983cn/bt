@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>UID &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="AVRCP Code Flow Analysis" href="avrcp.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hfp/index.html">HFP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">A2DP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">A2dp Code Analysis Notes</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">A2DP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">A2dp Code Analysis Notes</a> &raquo;</li>
+        
+      <li>UID</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/a2dp/code/uid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="uid">
+<h1>UID<a class="headerlink" href="#uid" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-concepts">
+<h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Addressed Player</p>
+<p>The player to which the AV/C Panel Subunit shall route AV/C commands is the addressed player.</p>
+<p>Browsing commands with the scope <strong>Now Playing</strong> shall be routed via AVRCP to the Addressed Player.</p>
+</li>
+<li><p class="first">Browsed Player</p>
+<p>The player to which AVRCP shall route browsing commands with the scope <strong>Virtual Media Player Filesystem or Search</strong> is the browsed player.</p>
+</li>
+<li><p class="first">Now Playing list</p>
+<p>a dynamic playlist containing the media items currently scheduled to be played. The order of items in the Now Playing list supplied to the CT should reflect the order they appear on the media player application on the TG.</p>
+</li>
+<li><p class="first">UID</p>
+<p>Media elements are identified within the virtual filesystem by <strong>an 8 octet identifier</strong>, the UID.</p>
+<p>This allows individual items to be specified as the target of an operation.</p>
+</li>
+<li><p class="first">UID Counter</p>
+<p>The UID Counter allows the CT device to detect updates on the TG device. A TG device that supports the UID Counter shall update the value of the counter on each change to the media database.</p>
+<p>There are two different ways a Media Player on a target may handle the UID, depending on the nature of the Media Player: Database Aware (with UID change detection) and Database Unaware (without UID change detection).</p>
+<p>Support for UID change detection is indicated in the media player feature bitmask. Database aware players shall maintain a UID counter that is incremented whenever the database changes.</p>
+<p>Database Unaware Players shall always return UIDcounter=0.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="uids">
+<h2>UIDS<a class="headerlink" href="#uids" title="Permalink to this headline">¶</a></h2>
+<p>The UID shall be unique within a scope with the exception of the Virtual Media Player Filesystem on database unaware media players。</p>
+<dl class="docutils">
+<dt>Within the Virtual Media Player Filesystem, a UID uniquely identifies a Media Element Item. If the same Media Element Item is present at more than one location in the Virtual Media Player Filesystem, then it may have the same UID in each location. Within the Now Playing list, a UID uniquely identifies a Media Element Item. If the same Media</dt>
+<dd>Element Item is present at more than one location in the Now Playing list, each instance shall have a different UID.</dd>
+</dl>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">UID=0x0</span></code> is a special value used only to request the metadata for the currently playing media using the GetElementAttributes command and shall not be used for any item in a folder.</p>
+<p>The UID scope is limited to one player. UID handling is specific to a player, and different players on the same TG device may behave in different ways.</p>
+</div>
+<div class="section" id="folderitemsdata">
+<h2>FolderItemsData<a class="headerlink" href="#folderitemsdata" title="Permalink to this headline">¶</a></h2>
+<img alt="../../_images/2018072501.png" src="../../_images/2018072501.png" />
+</div>
+<div class="section" id="uid-to-media-id-mapping">
+<h2>uid to media id mapping<a class="headerlink" href="#uid-to-media-id-mapping" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="cm">/* store mapping between uid(Avrcp) and mediaId(Media Player) for Media Item */</span>
+<span class="kd">private</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">mMediaHmap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+
+<span class="cm">/* store mapping between uid(Avrcp) and mediaId(Media Player) for Folder Item */</span>
+<span class="kd">private</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">mFolderHmap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+</pre></div>
+</div>
+<p>media id is a unique persistent id for the content or null.</p>
+<p>media id is the media id(MediaSession.QueueItem) defined from player side, uid is the media id  defined from avrcp side.</p>
+<p>media id info from players:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">static</span> <span class="o">{</span>
+ <span class="n">createMediaMetadataCompat</span><span class="o">(</span>
+         <span class="s">&quot;Jazz_In_Paris&quot;</span><span class="o">,</span> <span class="c1">//media id</span>
+         <span class="s">&quot;Jazz in Paris&quot;</span><span class="o">,</span>
+         <span class="s">&quot;Media Right Productions&quot;</span><span class="o">,</span>
+         <span class="s">&quot;Jazz &amp; Blues&quot;</span><span class="o">,</span>
+         <span class="s">&quot;Jazz&quot;</span><span class="o">,</span>
+         <span class="mi">103</span><span class="o">,</span>
+         <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">,</span>
+         <span class="s">&quot;jazz_in_paris.mp3&quot;</span><span class="o">,</span>
+         <span class="n">R</span><span class="o">.</span><span class="na">drawable</span><span class="o">.</span><span class="na">album_jazz_blues</span><span class="o">,</span>
+         <span class="s">&quot;album_jazz_blues&quot;</span><span class="o">);</span>
+ <span class="n">createMediaMetadataCompat</span><span class="o">(</span>
+         <span class="s">&quot;The_Coldest_Shoulder&quot;</span><span class="o">,</span> <span class="c1">//media id</span>
+         <span class="s">&quot;The Coldest Shoulder&quot;</span><span class="o">,</span>
+         <span class="s">&quot;The 126ers&quot;</span><span class="o">,</span>
+         <span class="s">&quot;Youtube Audio Library Rock 2&quot;</span><span class="o">,</span>
+         <span class="s">&quot;Rock&quot;</span><span class="o">,</span>
+         <span class="mi">160</span><span class="o">,</span>
+         <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">,</span>
+         <span class="s">&quot;the_coldest_shoulder.mp3&quot;</span><span class="o">,</span>
+         <span class="n">R</span><span class="o">.</span><span class="na">drawable</span><span class="o">.</span><span class="na">album_youtube_audio_library_rock_2</span><span class="o">,</span>
+         <span class="s">&quot;album_youtube_audio_library_rock_2&quot;</span><span class="o">);</span>
+ <span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="avrcp.html" class="btn btn-neutral" title="AVRCP Code Flow Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

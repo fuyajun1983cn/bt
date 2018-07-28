@@ -7,3 +7,4 @@ HFP Specification Learning Notes
    overview.rst
    app.rst
    interop.rst
+   at-cmd.rst

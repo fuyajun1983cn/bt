@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>A2DP Code Flow Analysis &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="AVRCP Code Flow Analysis" href="avrcp.html" />
+    <link rel="prev" title="AV State Machine Code Flow Analysis" href="av_sm.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hfp/index.html">HFP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">A2DP Learning Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">A2dp Code Analysis Notes</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">A2DP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">A2dp Code Analysis Notes</a> &raquo;</li>
+        
+      <li>A2DP Code Flow Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/a2dp/code/a2dp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="a2dp-code-flow-analysis">
+<h1>A2DP Code Flow Analysis<a class="headerlink" href="#a2dp-code-flow-analysis" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">a2dp sink delay reporting</p>
+<p>Keys to check if the delay reporting is working or not.</p>
+<p>OMR1 Branch:</p>
+<ol class="arabic">
+<li><p class="first">snoop log</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="m">529</span>                         <span class="m">2</span>                              Single Packet     Slave     DELAYREPORT   <span class="m">2500</span>       <span class="m">2</span>              <span class="m">13</span>           <span class="m">00</span>:00:00.002000                <span class="m">5</span>/23/2018 <span class="m">1</span>:05:34.020000 AM
+<span class="m">530</span>                         <span class="m">2</span>                              Single Packet     Master DELAYREPORT                   <span class="m">2</span>              <span class="m">10</span>           <span class="m">00</span>:00:00.003000                <span class="m">5</span>/23/2018 <span class="m">1</span>:05:34.023000 AM
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for BT host stack processing Delay report:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>bt_btif : bta_av_ssm_execute<span class="o">()</span>: AV Sevent<span class="o">(</span>0x41<span class="o">)=</span>0x1229<span class="o">(</span>AVDT_DELAY_RPT<span class="o">)</span> <span class="nv">state</span><span class="o">=</span><span class="m">2</span><span class="o">(</span>OPENING<span class="o">)</span>
+bt_btif : bta_av_co_audio_delay: handle: x41, delay:0x96
+bt_btif : btif_av_get_sink_latency, <span class="k">return</span> sink latency: <span class="m">150</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for audio fetching sink delay (Split A2dp)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>bthost_ipc: audio_get_a2dp_sink_latency: <span class="nv">state</span> <span class="o">=</span> AUDIO_A2DP_STATE_STARTED
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for audio fetch sink delay (Non-split A2dp)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>A2DP_CTRL_GET_SINK_LATENCY
+</pre></div>
+</div>
+</li>
+</ol>
+<p>P Branch:</p>
+<ol class="arabic">
+<li><p class="first">Snoop log:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="m">529</span>         <span class="m">2</span>                              Single Packet     Slave     DELAYREPORT   <span class="m">2500</span>       <span class="m">2</span>              <span class="m">13</span>           <span class="m">00</span>:00:00.002000                <span class="m">5</span>/23/2018 <span class="m">1</span>:05:34.020000 AM
+<span class="m">530</span>             <span class="m">2</span>                              Single Packet     Master DELAYREPORT                   <span class="m">2</span>              <span class="m">10</span>           <span class="m">00</span>:00:00.003000        <span class="m">5</span>/23/2018 <span class="m">1</span>:05:34.023000 AM
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for BT host stack processing Delay report:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>bt_btif : bta_av_ssm_execute<span class="o">()</span>: AV Sevent<span class="o">(</span>0x42<span class="o">)=</span>0x1229<span class="o">(</span>AVDT_DELAY_RPT<span class="o">)</span> <span class="nv">state</span><span class="o">=</span><span class="m">2</span><span class="o">(</span>OPENING<span class="o">)</span>
+bt_btif : bta_av_delay_rpt: delay report value: <span class="m">1500</span>
+bt_btif : bta_av_co_audio_delay: handle: x42, delay:0x5dc
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for audio fetching sink delay (Split A2dp)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>btif_a2dp_audio_interface: a2dp_get_sink_latency
+bt_btif : btif_a2dp_control_get_audio_delay: DELAY: <span class="m">150</span> ms, index: <span class="m">1</span>
+btif_a2dp_audio_interface: <span class="nv">send_sink_latency</span> <span class="o">=</span> <span class="m">150</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Key logs for audio fetch sink delay (Non-split A2dp)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>btif_a2dp_recv_ctrl_data: A2DP_CTRL_GET_PRESENTATION_POSITION
+Delay Rpt: total bytes <span class="nb">read</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="avrcp.html" class="btn btn-neutral float-right" title="AVRCP Code Flow Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="av_sm.html" class="btn btn-neutral" title="AV State Machine Code Flow Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

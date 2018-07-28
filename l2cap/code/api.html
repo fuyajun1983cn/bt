@@ -1,0 +1,1060 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>L2CAP API for Higher Layers &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SDP Specification Learning Notes" href="../../sdp/index.html" />
+    <link rel="prev" title="L2CAP Main Data Structures" href="data-structure.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">L2CAP Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../spec/index.html">L2CAP Specification Learning Notes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Code Architecture Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hfp/index.html">HFP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../a2dp/index.html">A2DP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">L2CAP Learning Notes</a> &raquo;</li>
+        
+          <li><a href="index.html">Code Architecture Analysis</a> &raquo;</li>
+        
+      <li>L2CAP API for Higher Layers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/l2cap/code/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="l2cap-api-for-higher-layers">
+<h1>L2CAP API for Higher Layers<a class="headerlink" href="#l2cap-api-for-higher-layers" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_Register(uint16_t psm, tL2CAP_APPL_INFO* p_cb_info)</code></dt>
+<dd><p>Other layers call this function to register for L2CAP services</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>psm</strong> – uint16_t</li>
+<li><strong>p_cb_info</strong> – tL2CAP_APPL_INFO</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">PSM to use or zero if error.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">void L2CA_Deregister(uint16_t psm)</code></dt>
+<dd><p>Other layers call this function to de-register for L2CAP services</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>psm</strong> – uint16_t</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">return nothing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_AllocatePSM(void)</code></dt>
+<dd><p>Other layers call this function to find an unused PSM for L2CAP services</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">PSM to use.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_ConnectReq(uint16_t psm, const RawAddress&amp; p_bd_addr)</code></dt>
+<dd><p>Higher layers call this function to create an L2CAP connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>psm</strong> – uint16_t</li>
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">the CID of the connection, or 0 if it failed to start</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_ErtmConnectReq(uint16_t psm, const RawAddress&amp; p_bd_addr, tL2CAP_ERTM_INFO* p_ertm_info)</code></dt>
+<dd><p>Higher layers call this function to create an L2CAP connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>psm</strong> – uint16_t</li>
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">the CID of the connection, or 0 if it failed to start</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_RegisterLECoc(uint16_t psm, tL2CAP_APPL_INFO* p_cb_info)</code></dt>
+<dd><p>Other layers call this function to register for L2CAP Connection Oriented Channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>psm</strong> – uint16_t</li>
+<li><strong>p_cb_info</strong> – tL2CAP_APPL_INFO</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">PSM to use or zero if error.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">void L2CA_DeregisterLECoc(uint16_t psm)</code></dt>
+<dd><p>Other layers call this function to de-register for L2CAP Connection Oriented Channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>psm</strong> – uint16_t</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">void.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_ConnectLECocReq(uint16_t psm, const RawAddress&amp; p_bd_addr, tL2CAP_LE_CFG_INFO* p_cfg)</code></dt>
+<dd><blockquote>
+<div>Higher layers call this function to create an L2CAP connection.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>psm</strong> – uint16_t</li>
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+<li><strong>p_cfg</strong> – tL2CAP_LE_CFG_INFO</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">the CID of the connection, or 0 if it failed to start</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConnectLECocRsp(const RawAddress&amp; p_bd_addr, uint8_t id, uint16_t lcid, uint16_t result, uint16_t status, tL2CAP_LE_CFG_INFO* p_cfg)</code></dt>
+<dd><p>Higher layers call this function to accept an incoming L2CAP COC connection, for which they had gotten an connect indication callback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+<li><strong>id</strong> – uint8_t, transaction id</li>
+<li><strong>lcid</strong> – uint16_t, local CID</li>
+<li><strong>result</strong> – uint16_t, l2cap connection result code</li>
+<li><strong>status</strong> – uint16_t, L2CAP status</li>
+<li><strong>p_cfg</strong> – tL2CAP_LE_CFG_INFO, config for ble connection oriented channel</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool, true for success, false for failure</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_GetPeerLECocConfig(uint16_t lcid, tL2CAP_LE_CFG_INFO* peer_cfg)</code></dt>
+<dd><p>Get a peers configuration for LE Connection Oriented Channel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lcid</strong> – uint16_t, local CID</li>
+<li><strong>peer_cfg</strong> – Pointers to peers configuration storage area.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if peer is connected.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetConnectionCallbacks(uint16_t local_cid, const tL2CAP_APPL_INFO* callbacks)</code></dt>
+<dd><p>set the callback functions for an upper layer on top of l2cap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>local_cid</strong> – uint16_t, local CID</li>
+<li><strong>callbacks</strong> – tL2CAP_APPL_INFO</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConnectRsp(const RawAddress&amp; p_bd_addr, uint8_t id, uint16_t lcid, uint16_t result, uint16_t status)</code></dt>
+<dd><p>Higher layers call this function to accept an incoming L2CAP connection, for which they had gotten an connect indication callback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+<li><strong>id</strong> – uint8_t, transaction ID.</li>
+<li><strong>lcid</strong> – uint16_t, local CID.</li>
+<li><strong>result</strong> – uint16_t, l2cap connection result code.</li>
+<li><strong>status</strong> – uint16_t, l2cap connection status.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool, true for success, false for failure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ErtmConnectRsp(const RawAddress&amp; p_bd_addr, uint8_t id, uint16_t lcid, uint16_t result, uint16_t status, tL2CAP_ERTM_INFO* p_ertm_info)</code></dt>
+<dd><p>Higher layers call this function to accept an incoming L2CAP connection, for which they had gotten an connect indication callback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_ertm_info</strong> – tL2CAP_ERTM_INFO, information about ERTM mode.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">true for success, false for failure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConfigReq(uint16_t cid, tL2CAP_CFG_INFO* p_cfg)</code></dt>
+<dd><p>Higher layers call this function to send configuration.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The FCR options of p_cfg are not used.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>p_cfg</strong> – local configuration parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if configuration sent, else false</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConfigRsp(uint16_t cid, tL2CAP_CFG_INFO* p_cfg)</code></dt>
+<dd><p>Higher layers call this function to send a configuration response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>p_cfg</strong> – local configuration parameters.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if configuration response sent, else false.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_DisconnectReq(uint16_t cid)</code></dt>
+<dd><p>Higher layers call this function to disconnect a channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cid</strong> – local CID</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">true if disconnect sent, else false.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_DisconnectRsp(uint16_t cid)</code></dt>
+<dd><p>Higher layers call this function to acknowledge the disconnection of a channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cid</strong> – local CID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">void.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_Ping(const RawAddress&amp; p_bd_addr, tL2CA_ECHO_RSP_CB* p_callback)</code></dt>
+<dd><p>Higher layers call this function to send an echo request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+<li><strong>p_callback</strong> – tL2CA_ECHO_RSP_CB</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if echo request sent, else false.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_Echo(const RawAddress&amp; p_bd_addr, BT_HDR* p_data, tL2CA_ECHO_DATA_CB* p_callback)</code></dt>
+<dd><p>Higher layers call this function to send an echo request with application-specific data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p_bd_addr</strong> – RawAddress</li>
+<li><strong>p_data</strong> – BT_HDR</li>
+<li><strong>p_callback</strong> – tL2CA_ECHO_DATA_CB</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if echo request sent, else false.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_GetIdentifiers(uint16_t lcid, uint16_t* rcid, uint16_t* handle)</code></dt>
+<dd><p>get connection handle for a l2cap link.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lcid</strong> – local CID.</li>
+<li><strong>rcid</strong> – remote CID.</li>
+<li><strong>handle</strong> – l2cap link handle.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetIdleTimeout(uint16_t cid, uint16_t timeout, bool is_global)</code></dt>
+<dd><p>Higher layers call this function to set the idle timeout for a connection, or for all future connections.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This timeout takes effect after at least 1 channel has been
+established and removed. L2CAP maintains its own timer from
+when a connection is established till the first channel is set up.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>timeout</strong> – l2cap link idle timeout, in seconds.</li>
+<li><strong>is_global</strong> – bool, true for all l2cap links.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetIdleTimeoutByBdAddr(const RawAddress&amp; bd_addr, uint16_t timeout, tBT_TRANSPORT transport)</code></dt>
+<dd><p>Higher layers call this function to set the idle timeout for a connection.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This timeout applies to all logical channels active on the ACL link.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bd_addr</strong> – RawAddress.</li>
+<li><strong>timeout</strong> – uint16_t.</li>
+<li><strong>transport</strong> – tBT_TRANSPORT.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint8_t L2CA_SetDesireRole(uint8_t new_role)</code></dt>
+<dd><p>This function sets the desire role for L2CAP.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If the new role is L2CAP_ROLE_ALLOW_SWITCH, allow switch on
+HciCreateConnection.
+If the new role is L2CAP_ROLE_DISALLOW_SWITCH, do not allow
+switch on HciCreateConnection.</p>
+<p class="last">If the new role is a valid role (HCI_ROLE_MASTER or
+HCI_ROLE_SLAVE), the desire role is set to the new value.
+Otherwise, it is not changed.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_role</strong> – uint8_t</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">uint8_t, the new (current) role.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetAclPriority(const RawAddress&amp; bd_addr, uint8_t priority)</code></dt>
+<dd><p>Sets the transmission priority for a channel.
+(For initial implementation only two values are valid. <cite>L2CAP_PRIORITY_NORMAL</cite> and <cite>L2CAP_PRIORITY_HIGH</cite>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bd_addr</strong> – RawAddress</li>
+<li><strong>priority</strong> – uint8_t</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetTxPriority(uint16_t cid, tL2CAP_CHNL_PRIORITY priority)</code></dt>
+<dd><p>Sets the transmission priority for a channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>priority</strong> – tL2CAP_CHNL_PRIORITY.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if a valid channel, else false.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetFlushTimeout(const RawAddress&amp; bd_addr, uint16_t flush_tout)</code></dt>
+<dd><p>This function set the automatic flush time out in Baseband for ACL-U packets.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This flush timeout applies to all logical channels active on the ACL link.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bd_addr</strong> – the remote BD address of ACL link. If it is BT_DB_ANY then the flush time out will be applied to all ACL links.</li>
+<li><strong>flush_tout</strong> – flush time out in ms.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if command succeeded, false if failed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_GetPeerFeatures(const RawAddress&amp; bd_addr, uint32_t* p_ext_feat, uint8_t* p_chnl_mask)</code></dt>
+<dd><p>Get a peers features and fixed channel map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bd_addr</strong> – BD address of the peer.</li>
+<li><strong>p_ext_feat</strong> – Pointers to features.</li>
+<li><strong>p_chnl_mask</strong> – Pointers to channel mask storage area.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if peer is connected.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_RegisterFixedChannel(uint16_t fixed_cid, tL2CAP_FIXED_CHNL_REG* p_freg)</code></dt>
+<dd><p>Register a fixed channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fixed_cid</strong> – fixed channel id.</li>
+<li><strong>p_freg</strong> – Channel Callbacks and config.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConnectFixedChnl(uint16_t fixed_cid, const RawAddress&amp; rem_bda)</code></dt>
+<dd><p>Connect an fixed signalling channel to a remote device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fixed_cid</strong> – see above.</li>
+<li><strong>rem_bda</strong> – remote BD ADDRESS.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if connection started.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_ConnectFixedChnl(uint16_t fixed_cid, const RawAddress&amp; rem_bda, uint8_t initiating_phys)</code></dt>
+<dd><p>Connect an fixed signalling channel to a remote device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>initiating_phys</strong> – Initial Transportation. EDEDR or LE.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_SendFixedChnlData(uint16_t fixed_cid, const RawAddress&amp; rem_bda, BT_HDR* p_buf)</code></dt>
+<dd><p>Write data on a fixed channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_buf</strong> – data packets.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_RemoveFixedChnl(uint16_t fixed_cid, const RawAddress&amp; rem_bda)</code></dt>
+<dd><p>Remove a fixed channel to a remote device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">true if channel removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetFixedChannelTout(const RawAddress&amp; rem_bda, uint16_t fixed_cid, uint16_t idle_tout)</code></dt>
+<dd><p>Higher layers call this function to set the idle timeout for a fixed channel. The “idle timeout” is the amount of time
+that a connection can remain up with no L2CAP channels on
+it. A timeout of zero means that the connection will be torn
+down immediately when the last channel is removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idle_tout</strong> – A timeout of 0xFFFF means no timeout. Values are in seconds.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_GetCurrentConfig(uint16_t lcid, tL2CAP_CFG_INFO** pp_our_cfg, tL2CAP_CH_CFG_BITS* p_our_cfg_bits, tL2CAP_CFG_INFO** pp_peer_cfg, tL2CAP_CH_CFG_BITS* p_peer_cfg_bits)</code></dt>
+<dd><p>This function returns configurations of L2CAP channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pp_our_cfg</strong> – pointer of our saved configuration options.</li>
+<li><strong>p_our_cfg_bits</strong> – valid config in bitmap.</li>
+<li><strong>pp_peer_cfg</strong> – pointer of peer’s saved configuration options.</li>
+<li><strong>p_peer_cfg_bits</strong> – valid config in bitmap.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if successful.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_GetConnectionConfig(uint16_t lcid, uint16_t* mtu, uint16_t* rcid, uint16_t* handle)</code></dt>
+<dd><p>This function returns configurations of L2CAP channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lcid</strong> – local CID.</li>
+<li><strong>mtu</strong> – MTU.</li>
+<li><strong>rcid</strong> – remote CID.</li>
+<li><strong>handle</strong> – ACL handle for a link.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if successful.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint8_t L2CA_DataWrite(uint16_t cid, BT_HDR* p_data)</code></dt>
+<dd><p>Higher layers call this function to write data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>p_data</strong> – data to write.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">uint8_t.
+- L2CAP_DW_SUCCESS, if data accepted, else false
+- L2CAP_DW_CONGESTED, if data accepted and the channel is congested.
+- L2CAP_DW_FAILED, if error.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_SetChnlFlushability(uint16_t cid, bool is_flushable)</code></dt>
+<dd><p>Higher layers call this function to set a channel’s flushability flags.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cid</strong> – local CID.</li>
+<li><strong>is_flushable</strong> – flushability flags.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">true if CID found, else false.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint8_t L2CA_DataWriteEx(uint16_t cid, BT_HDR* p_data, uint16_t flags)</code></dt>
+<dd><p>Higher layers call this function to write data with extended
+flags.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flags</strong> – flags : L2CAP_FLUSHABLE_CH_BASED, L2CAP_FLUSHABLE_PKT, L2CAP_NON_FLUSHABLE_PKT.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">uint16_t L2CA_FlushChannel(uint16_t lcid, uint16_t num_to_flush)</code></dt>
+<dd><p>This function flushes none, some or all buffers queued up
+for xmission for a particular CID. If called with
+L2CAP_FLUSH_CHANS_GET (0), it simply returns the number
+of buffers queued for that CID L2CAP_FLUSH_CHANS_ALL (0xffff)
+flushes all buffers.  All other values specifies the maximum
+buffers to flush.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Number of buffers left queued for that CID.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">void L2CA_SetMediaStreamChannel(uint16_t local_media_cid, bool status)</code></dt>
+<dd><p>This function is called to set/reset the ccb of active media streaming channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>local_media_cid</strong> – The local cid provided to A2DP to be used for streaming.</li>
+<li><strong>status</strong> – The status of media streaming on this channel.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">bool L2CA_isMediaChannel(uint16_t handle, uint16_t channel_id, bool is_local_cid)</code></dt>
+<dd><p>This function returns if the channel id passed as parameter is an A2DP streaming channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>handle</strong> – Connection handle with the remote device.</li>
+<li><strong>channel_id</strong> – Channel ID.</li>
+<li><strong>is_local_cid</strong> – Signifies if the channel id passed is local cid or remote cid (true if local, remote otherwise).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../sdp/index.html" class="btn btn-neutral float-right" title="SDP Specification Learning Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-structure.html" class="btn btn-neutral" title="L2CAP Main Data Structures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

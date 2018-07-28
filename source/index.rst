@@ -14,3 +14,4 @@ Table of Contents
    l2cap/index.rst
    sdp/index.rst
    hfp/index.rst
+   a2dp/index.rst
