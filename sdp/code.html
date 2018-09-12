@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SDP Code Analysis &mdash; bluetooth 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="HFP Learning Notes" href="../hfp/index.html" />
+    <link rel="prev" title="SDP Specification Learning Notes" href="spec.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bluetooth
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../l2cap/index.html">L2CAP Learning Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SDP Learning Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spec.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SDP Code Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../hfp/index.html">HFP Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../a2dp/index.html">A2DP Learning Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bluetooth</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">SDP Learning Notes</a> &raquo;</li>
+        
+      <li>SDP Code Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/sdp/code.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sdp-code-analysis">
+<h1>SDP Code Analysis<a class="headerlink" href="#sdp-code-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="main-data-structure">
+<h2>Main Data Structure<a class="headerlink" href="#main-data-structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tsdp-cb">
+<h3>tSDP_CB<a class="headerlink" href="#tsdp-cb" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/*  The main SDP control block */</span>
+  <span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">tL2CAP_CFG_INFO</span> <span class="n">l2cap_my_cfg</span><span class="p">;</span> <span class="cm">/* My L2CAP config     */</span>
+    <span class="n">tCONN_CB</span> <span class="n">ccb</span><span class="p">[</span><span class="n">SDP_MAX_CONNECTIONS</span><span class="p">];</span>
+  <span class="cp">#if (SDP_SERVER_ENABLED == TRUE)</span>
+    <span class="n">tSDP_DB</span> <span class="n">server_db</span><span class="p">;</span>
+  <span class="cp">#endif</span>
+    <span class="n">tL2CAP_APPL_INFO</span> <span class="n">reg_info</span><span class="p">;</span>    <span class="cm">/* L2CAP Registration info */</span>
+    <span class="kt">uint16_t</span> <span class="n">max_attr_list_size</span><span class="p">;</span>  <span class="cm">/* Max attribute list size to use   */</span>
+    <span class="kt">uint16_t</span> <span class="n">max_recs_per_search</span><span class="p">;</span> <span class="cm">/* Max records we want per seaarch  */</span>
+    <span class="kt">uint8_t</span> <span class="n">trace_level</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">tSDP_CB</span><span class="p">;</span>
+
+<span class="n">refer</span> <span class="n">to</span>  <span class="n">the</span> <span class="n">following</span> <span class="n">two</span> <span class="n">functions</span> <span class="k">for</span> <span class="n">data</span> <span class="n">structure</span> <span class="n">init</span><span class="o">/</span><span class="n">deinit</span><span class="p">.</span>
+
+<span class="p">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="o">::</span> <span class="n">c</span><span class="o">++</span>
+
+   <span class="k">extern</span> <span class="kt">void</span> <span class="n">sdp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+   <span class="k">extern</span> <span class="kt">void</span> <span class="nf">sdp_free</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tconn-cb">
+<h3>tCONN_CB<a class="headerlink" href="#tconn-cb" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the SDP Connection Control Block */</span>
+  <span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">con_state</span><span class="p">;</span>
+
+    <span class="kt">uint8_t</span> <span class="n">con_flags</span><span class="p">;</span>
+
+    <span class="n">RawAddress</span> <span class="n">device_address</span><span class="p">;</span>
+    <span class="n">alarm_t</span><span class="o">*</span> <span class="n">sdp_conn_timer</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">rem_mtu_size</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">connection_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">list_len</span><span class="p">;</span> <span class="cm">/* length of the response in the GKI buffer */</span>
+    <span class="kt">uint16_t</span> <span class="n">bl_update_len</span><span class="p">;</span> <span class="cm">/* length of the attributes to be updated fromfinal sdp response len */</span>
+    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">rsp_list</span><span class="p">;</span> <span class="cm">/* pointer to GKI buffer holding response */</span>
+
+    <span class="n">tSDP_DISCOVERY_DB</span><span class="o">*</span> <span class="n">p_db</span><span class="p">;</span> <span class="cm">/* Database to save info into   */</span>
+    <span class="n">tSDP_DISC_CMPL_CB</span><span class="o">*</span> <span class="n">p_cb</span><span class="p">;</span> <span class="cm">/* Callback for discovery done  */</span>
+    <span class="n">tSDP_DISC_CMPL_CB2</span><span class="o">*</span>
+        <span class="n">p_cb2</span><span class="p">;</span> <span class="cm">/* Callback for discovery done piggy back with the user data */</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">user_data</span><span class="p">;</span> <span class="cm">/* piggy back user data */</span>
+    <span class="kt">uint32_t</span>
+        <span class="n">handles</span><span class="p">[</span><span class="n">SDP_MAX_DISC_SERVER_RECS</span><span class="p">];</span> <span class="cm">/* Discovered server record handles */</span>
+    <span class="kt">uint16_t</span> <span class="n">num_handles</span><span class="p">;</span>                  <span class="cm">/* Number of server handles     */</span>
+    <span class="kt">uint16_t</span> <span class="n">cur_handle</span><span class="p">;</span>                   <span class="cm">/* Current handle being processed */</span>
+    <span class="kt">uint16_t</span> <span class="n">transaction_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">disconnect_reason</span><span class="p">;</span> <span class="cm">/* Disconnect reason            */</span>
+  <span class="cp">#if (SDP_BROWSE_PLUS == TRUE)</span>
+    <span class="kt">uint16_t</span> <span class="n">cur_uuid_idx</span><span class="p">;</span>
+  <span class="cp">#endif</span>
+
+    <span class="kt">uint8_t</span> <span class="n">disc_state</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">is_attr_search</span><span class="p">;</span>
+
+  <span class="cp">#if (SDP_SERVER_ENABLED == TRUE)</span>
+    <span class="kt">uint16_t</span> <span class="n">cont_offset</span><span class="p">;</span>     <span class="cm">/* Continuation state data in the server response */</span>
+    <span class="n">tSDP_CONT_INFO</span> <span class="n">cont_info</span><span class="p">;</span> <span class="cm">/* structure to hold continuation information for</span>
+<span class="cm">                                 the server response */</span>
+  <span class="cp">#endif                      </span><span class="cm">/* SDP_SERVER_ENABLED == TRUE */</span><span class="cp"></span>
+
+  <span class="p">}</span> <span class="n">tCONN_CB</span><span class="p">;</span>
+
+  <span class="cm">/*  The main SDP control block */</span>
+  <span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">tL2CAP_CFG_INFO</span> <span class="n">l2cap_my_cfg</span><span class="p">;</span> <span class="cm">/* My L2CAP config     */</span>
+    <span class="n">tCONN_CB</span> <span class="n">ccb</span><span class="p">[</span><span class="n">SDP_MAX_CONNECTIONS</span><span class="p">];</span>
+  <span class="cp">#if (SDP_SERVER_ENABLED == TRUE)</span>
+    <span class="n">tSDP_DB</span> <span class="n">server_db</span><span class="p">;</span>
+  <span class="cp">#endif</span>
+    <span class="n">tL2CAP_APPL_INFO</span> <span class="n">reg_info</span><span class="p">;</span>    <span class="cm">/* L2CAP Registration info */</span>
+    <span class="kt">uint16_t</span> <span class="n">max_attr_list_size</span><span class="p">;</span>  <span class="cm">/* Max attribute list size to use   */</span>
+    <span class="kt">uint16_t</span> <span class="n">max_recs_per_search</span><span class="p">;</span> <span class="cm">/* Max records we want per seaarch  */</span>
+    <span class="kt">uint8_t</span> <span class="n">trace_level</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">tSDP_CB</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">con_state</span></code></p>
+<p>SDP connection  state.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SDP_STATE_IDLE 0</span>
+<span class="cp">#define SDP_STATE_CONN_SETUP 1</span>
+<span class="cp">#define SDP_STATE_CFG_SETUP 2</span>
+<span class="cp">#define SDP_STATE_CONNECTED 3</span>
+<span class="cp">#define SDP_STATE_CONN_PEND 4</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">con_flags</span></code></p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SDP_FLAGS_IS_ORIG 0x01</span>
+<span class="cp">#define SDP_FLAGS_HIS_CFG_DONE 0x02</span>
+<span class="cp">#define SDP_FLAGS_MY_CFG_DONE 0x04</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">sdp_conn_timer</span></code></p>
+<p>inactivity timer.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">connection_id</span></code></p>
+<p>L2CAP CID.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_db</span></code></p>
+<p>database to save information.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">mem_size</span><span class="p">;</span>          <span class="cm">/* Memory size of the DB        */</span>
+  <span class="kt">uint32_t</span> <span class="n">mem_free</span><span class="p">;</span>          <span class="cm">/* Memory still available       */</span>
+  <span class="n">tSDP_DISC_REC</span><span class="o">*</span> <span class="n">p_first_rec</span><span class="p">;</span> <span class="cm">/* Addr of first record in DB   */</span>
+  <span class="kt">uint16_t</span> <span class="n">num_uuid_filters</span><span class="p">;</span>  <span class="cm">/* Number of UUIds to filter    */</span>
+  <span class="n">tSDP_UUID</span> <span class="n">uuid_filters</span><span class="p">[</span><span class="n">SDP_MAX_UUID_FILTERS</span><span class="p">];</span> <span class="cm">/* UUIDs to filter      */</span>
+  <span class="kt">uint16_t</span> <span class="n">num_attr_filters</span><span class="p">;</span> <span class="cm">/* Number of attribute filters  */</span>
+  <span class="kt">uint16_t</span> <span class="n">attr_filters</span><span class="p">[</span><span class="n">SDP_MAX_ATTR_FILTERS</span><span class="p">];</span> <span class="cm">/* Attributes to filter */</span>
+  <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">p_free_mem</span><span class="p">;</span> <span class="cm">/* Pointer to free memory       */</span>
+<span class="cp">#if (SDP_RAW_DATA_INCLUDED == TRUE)</span>
+  <span class="kt">uint8_t</span><span class="o">*</span>
+      <span class="n">raw_data</span><span class="p">;</span> <span class="cm">/* Received record from server. allocated/released by client  */</span>
+  <span class="kt">uint32_t</span> <span class="n">raw_size</span><span class="p">;</span> <span class="cm">/* size of raw_data */</span>
+  <span class="kt">uint32_t</span> <span class="n">raw_used</span><span class="p">;</span> <span class="cm">/* length of raw_data used */</span>
+<span class="cp">#endif</span>
+<span class="p">}</span> <span class="n">tSDP_DISCOVERY_DB</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../hfp/index.html" class="btn btn-neutral float-right" title="HFP Learning Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="spec.html" class="btn btn-neutral" title="SDP Specification Learning Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jackson Fu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

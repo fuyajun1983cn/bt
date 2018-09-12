@@ -81,7 +81,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Code Architecture Analysis</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Specification Learning Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sdp/index.html">SDP Learning Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../hfp/index.html">HFP Learning Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../a2dp/index.html">A2DP Learning Notes</a></li>
 </ul>
@@ -620,6 +620,444 @@ it will return the handle value to the upper layer and save it to this var.</p>
 <li><p class="first"><code class="docutils literal notranslate"><span class="pre">le_sec_pending_q</span></code></p>
 <p>Queue for LE CoC(Connection Oriented Channel) channels waiting for security check completion.</p>
 <p>refer to <a class="reference external" href="https://blog.csdn.net/Wendell_Gong/article/details/54956499">https://blog.csdn.net/Wendell_Gong/article/details/54956499</a>.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="tl2c-ccb">
+<h2>tL2C_CCB<a class="headerlink" href="#tl2c-ccb" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span> <span class="cm">/* Define a channel control block (CCB). There may be many channel control</span>
+<span class="cm"> * blocks between the same two Bluetooth devices (i.e. on the same link).</span>
+<span class="cm"> * Each CCB has unique local and remote CIDs. All channel control blocks on</span>
+<span class="cm"> * the same physical link and are chained together.</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">t_l2c_ccb</span> <span class="p">{</span>
+  <span class="kt">bool</span> <span class="n">in_use</span><span class="p">;</span>                <span class="cm">/* true when in use, false when not */</span>
+  <span class="n">tL2C_CHNL_STATE</span> <span class="n">chnl_state</span><span class="p">;</span> <span class="cm">/* Channel state */</span>
+  <span class="n">tL2CAP_LE_CFG_INFO</span>
+      <span class="n">local_conn_cfg</span><span class="p">;</span> <span class="cm">/* Our config for ble conn oriented channel */</span>
+  <span class="n">tL2CAP_LE_CFG_INFO</span>
+      <span class="n">peer_conn_cfg</span><span class="p">;</span>       <span class="cm">/* Peer device config ble conn oriented channel */</span>
+  <span class="kt">bool</span> <span class="n">is_first_seg</span><span class="p">;</span>       <span class="cm">/* Dtermine whether the received packet is the first</span>
+<span class="cm">                              segment or not */</span>
+  <span class="n">BT_HDR</span><span class="o">*</span> <span class="n">ble_sdu</span><span class="p">;</span>         <span class="cm">/* Buffer for storing unassembled sdu*/</span>
+  <span class="kt">uint16_t</span> <span class="n">ble_sdu_length</span><span class="p">;</span> <span class="cm">/* Length of unassembled sdu length*/</span>
+  <span class="k">struct</span> <span class="n">t_l2c_ccb</span><span class="o">*</span> <span class="n">p_next_ccb</span><span class="p">;</span> <span class="cm">/* Next CCB in the chain */</span>
+  <span class="k">struct</span> <span class="n">t_l2c_ccb</span><span class="o">*</span> <span class="n">p_prev_ccb</span><span class="p">;</span> <span class="cm">/* Previous CCB in the chain */</span>
+  <span class="k">struct</span> <span class="n">t_l2c_linkcb</span><span class="o">*</span> <span class="n">p_lcb</span><span class="p">;</span>   <span class="cm">/* Link this CCB is assigned to */</span>
+
+  <span class="kt">uint16_t</span> <span class="n">local_cid</span><span class="p">;</span>  <span class="cm">/* Local CID */</span>
+  <span class="kt">uint16_t</span> <span class="n">remote_cid</span><span class="p">;</span> <span class="cm">/* Remote CID */</span>
+
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">l2c_ccb_timer</span><span class="p">;</span> <span class="cm">/* CCB Timer Entry */</span>
+
+  <span class="n">tL2C_RCB</span><span class="o">*</span> <span class="n">p_rcb</span><span class="p">;</span>      <span class="cm">/* Registration CB for this Channel */</span>
+  <span class="kt">bool</span> <span class="n">should_free_rcb</span><span class="p">;</span> <span class="cm">/* True if RCB was allocated on the heap */</span>
+
+<span class="cp">#define IB_CFG_DONE 0x01</span>
+<span class="cp">#define OB_CFG_DONE 0x02</span>
+<span class="cp">#define RECONFIG_FLAG 0x04 </span><span class="cm">/* True after initial configuration */</span><span class="cp"></span>
+<span class="cp">#define CFG_DONE_MASK (IB_CFG_DONE | OB_CFG_DONE)</span>
+
+  <span class="kt">uint8_t</span> <span class="n">config_done</span><span class="p">;</span> <span class="cm">/* Configuration flag word */</span>
+  <span class="kt">uint8_t</span> <span class="n">local_id</span><span class="p">;</span>    <span class="cm">/* Transaction ID for local trans */</span>
+  <span class="kt">uint8_t</span> <span class="n">remote_id</span><span class="p">;</span>   <span class="cm">/* Transaction ID for local */</span>
+
+<span class="cp">#define CCB_FLAG_NO_RETRY 0x01     </span><span class="cm">/* no more retry */</span><span class="cp"></span>
+<span class="cp">#define CCB_FLAG_SENT_PENDING 0x02 </span><span class="cm">/* already sent pending response */</span><span class="cp"></span>
+  <span class="kt">uint8_t</span> <span class="n">flags</span><span class="p">;</span>
+
+  <span class="n">tL2CAP_CFG_INFO</span> <span class="n">our_cfg</span><span class="p">;</span>          <span class="cm">/* Our saved configuration options */</span>
+  <span class="n">tL2CAP_CH_CFG_BITS</span> <span class="n">peer_cfg_bits</span><span class="p">;</span> <span class="cm">/* Store what peer wants to configure */</span>
+  <span class="n">tL2CAP_CFG_INFO</span> <span class="n">peer_cfg</span><span class="p">;</span>         <span class="cm">/* Peer&#39;s saved configuration options */</span>
+
+  <span class="n">fixed_queue_t</span><span class="o">*</span> <span class="n">xmit_hold_q</span><span class="p">;</span> <span class="cm">/* Transmit data hold queue */</span>
+  <span class="kt">bool</span> <span class="n">cong_sent</span><span class="p">;</span>             <span class="cm">/* Set when congested status sent */</span>
+  <span class="kt">uint16_t</span> <span class="n">buff_quota</span><span class="p">;</span>        <span class="cm">/* Buffer quota before sending congestion */</span>
+
+  <span class="n">tL2CAP_CHNL_PRIORITY</span> <span class="n">ccb_priority</span><span class="p">;</span>  <span class="cm">/* Channel priority */</span>
+  <span class="n">tL2CAP_CHNL_DATA_RATE</span> <span class="n">tx_data_rate</span><span class="p">;</span> <span class="cm">/* Channel Tx data rate */</span>
+  <span class="n">tL2CAP_CHNL_DATA_RATE</span> <span class="n">rx_data_rate</span><span class="p">;</span> <span class="cm">/* Channel Rx data rate */</span>
+
+  <span class="cm">/* Fields used for eL2CAP */</span>
+  <span class="n">tL2CAP_ERTM_INFO</span> <span class="n">ertm_info</span><span class="p">;</span>
+  <span class="n">tL2C_FCRB</span> <span class="n">fcrb</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">tx_mps</span><span class="p">;</span> <span class="cm">/* TX MPS adjusted based on current controller */</span>
+  <span class="kt">uint16_t</span> <span class="n">max_rx_mtu</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">fcr_cfg_tries</span><span class="p">;</span>          <span class="cm">/* Max number of negotiation attempts */</span>
+  <span class="kt">bool</span> <span class="n">peer_cfg_already_rejected</span><span class="p">;</span> <span class="cm">/* If mode rejected once, set to true */</span>
+  <span class="kt">bool</span> <span class="n">out_cfg_fcr_present</span><span class="p">;</span> <span class="cm">/* true if cfg response shoulkd include fcr options</span>
+<span class="cm">                               */</span>
+
+<span class="cp">#define L2CAP_CFG_FCS_OUR 0x01  </span><span class="cm">/* Our desired config FCS option */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CFG_FCS_PEER 0x02 </span><span class="cm">/* Peer&#39;s desired config FCS option */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_BYPASS_FCS (L2CAP_CFG_FCS_OUR | L2CAP_CFG_FCS_PEER)</span>
+  <span class="kt">uint8_t</span> <span class="n">bypass_fcs</span><span class="p">;</span>
+
+<span class="cp">#if (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE)</span>
+  <span class="kt">bool</span> <span class="n">is_flushable</span><span class="p">;</span> <span class="cm">/* true if channel is flushable */</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if (L2CAP_NUM_FIXED_CHNLS &gt; 0 || L2CAP_UCD_INCLUDED == TRUE)</span>
+  <span class="kt">uint16_t</span> <span class="n">fixed_chnl_idle_tout</span><span class="p">;</span> <span class="cm">/* Idle timeout to use for the fixed channel */</span>
+<span class="cp">#endif</span>
+  <span class="kt">uint16_t</span> <span class="n">tx_data_len</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">tL2C_CCB</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">in_use</span></code></p>
+<p>test if the channel was used or  not currently.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">chnl_state</span></code></p>
+<p>Chhannel State:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the possible L2CAP channel states. The names of</span>
+<span class="cm"> * the states may seem a bit strange, but they are taken from</span>
+<span class="cm"> * the Bluetooth specification.</span>
+<span class="cm">*/</span>
+<span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+  <span class="n">CST_CLOSED</span><span class="p">,</span>                  <span class="cm">/* Channel is in closed state */</span>
+  <span class="n">CST_ORIG_W4_SEC_COMP</span><span class="p">,</span>        <span class="cm">/* Originator waits security clearence */</span>
+  <span class="n">CST_TERM_W4_SEC_COMP</span><span class="p">,</span>        <span class="cm">/* Acceptor waits security clearence */</span>
+  <span class="n">CST_W4_L2CAP_CONNECT_RSP</span><span class="p">,</span>    <span class="cm">/* Waiting for peer conenct response */</span>
+  <span class="n">CST_W4_L2CA_CONNECT_RSP</span><span class="p">,</span>     <span class="cm">/* Waiting for upper layer connect rsp */</span>
+  <span class="n">CST_CONFIG</span><span class="p">,</span>                  <span class="cm">/* Negotiating configuration */</span>
+  <span class="n">CST_OPEN</span><span class="p">,</span>                    <span class="cm">/* Data transfer state */</span>
+  <span class="n">CST_W4_L2CAP_DISCONNECT_RSP</span><span class="p">,</span> <span class="cm">/* Waiting for peer disconnect rsp */</span>
+  <span class="n">CST_W4_L2CA_DISCONNECT_RSP</span>   <span class="cm">/* Waiting for upper layer disc rsp */</span>
+<span class="p">}</span> <span class="n">tL2C_CHNL_STATE</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">local_conn_cfg</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_conn_cfg</span></code></p>
+<p>our and peer configuration for BLE Oriented Channel</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define a structure to hold the configuration parameter for LE L2CAP</span>
+<span class="cm"> * connection oriented channels.</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">mtu</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">mps</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">credits</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">tL2CAP_LE_CFG_INFO</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_first_seg</span></code></p>
+<p>Dtermine whether the received packet is the first segment or not.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_sdu</span></code></p>
+<p>Buffer for storing unassembled sdu</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ble_sdu_length</span></code></p>
+<p>Length of unassembled sdu length</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_next_ccb</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_prev_ccb</span></code></p>
+<p>main the chain of the CCB.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span> <span class="cm">/* For all channels, send the event through their FSMs */</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">p_ccb</span> <span class="o">=</span> <span class="n">p_lcb</span><span class="o">-&gt;</span><span class="n">ccb_queue</span><span class="p">.</span><span class="n">p_first_ccb</span><span class="p">;</span> <span class="n">p_ccb</span><span class="p">;</span>
+     <span class="n">p_ccb</span> <span class="o">=</span> <span class="n">p_ccb</span><span class="o">-&gt;</span><span class="n">p_next_ccb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">p_ccb</span><span class="o">-&gt;</span><span class="n">chnl_state</span> <span class="o">==</span> <span class="n">CST_CLOSED</span><span class="p">)</span>
+    <span class="n">l2c_csm_execute</span><span class="p">(</span><span class="n">p_ccb</span><span class="p">,</span> <span class="n">L2CEVT_LP_CONNECT_CFM</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_lcb</span></code></p>
+<p>Link this CCB is assigned to</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">local_cid</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">remote_cid</span></code></p>
+<p>local and remote CID determined an App link between two devices.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">l2c_ccb_timer</span></code></p>
+<p>timer for state transition on a bluetooth channel.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">p_ccb</span><span class="o">-&gt;</span><span class="n">l2c_ccb_timer</span> <span class="o">=</span> <span class="n">alarm_new</span><span class="p">(</span><span class="s">&quot;l2c.l2c_ccb_timer&quot;</span><span class="p">);</span>
+
+<span class="n">alarm_set_on_mloop</span><span class="p">(</span><span class="n">p_lcb</span><span class="o">-&gt;</span><span class="n">l2c_lcb_timer</span><span class="p">,</span>
+             <span class="n">L2CAP_LINK_ROLE_SWITCH_TIMEOUT_MS</span><span class="p">,</span>
+             <span class="n">l2c_lcb_timer_timeout</span><span class="p">,</span> <span class="n">p_lcb</span><span class="p">);</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Timeout values (in milliseconds).</span>
+<span class="cm"> */</span>
+<span class="cp">#define L2CAP_LINK_ROLE_SWITCH_TIMEOUT_MS (10 * 1000)  </span><span class="cm">/* 10 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_LINK_CONNECT_TIMEOUT_MS (20 * 1000)      </span><span class="cm">/* 20 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_LINK_CONNECT_EXT_TIMEOUT_MS (120 * 1000) </span><span class="cm">/* 120 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_ECHO_RSP_TIMEOUT_MS (30 * 1000)          </span><span class="cm">/* 30 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_LINK_FLOW_CONTROL_TIMEOUT_MS (2 * 1000)  </span><span class="cm">/* 2 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_LINK_DISCONNECT_TIMEOUT_MS (30 * 1000)   </span><span class="cm">/* 30 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CHNL_CONNECT_TIMEOUT_MS (20 * 1000)      </span><span class="cm">/* 20 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CHNL_CONNECT_EXT_TIMEOUT_MS (120 * 1000) </span><span class="cm">/* 120 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CHNL_CFG_TIMEOUT_MS (30 * 1000)          </span><span class="cm">/* 30 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CHNL_DISCONNECT_TIMEOUT_MS (10 * 1000)   </span><span class="cm">/* 10 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_DELAY_CHECK_SM4_TIMEOUT_MS (2 * 1000)    </span><span class="cm">/* 2 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_WAIT_INFO_RSP_TIMEOUT_MS (3 * 1000)      </span><span class="cm">/* 3 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_BLE_LINK_CONNECT_TIMEOUT_MS (30 * 1000)  </span><span class="cm">/* 30 seconds */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_FCR_ACK_TIMEOUT_MS 200                   </span><span class="cm">/* 200 milliseconds */</span><span class="cp"></span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">p_rcb</span></code></p>
+<p>Registration CB for this Channel.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">should_free_rcb</span></code></p>
+<p>True if RCB was allocated on the heap.</p>
+<p>set to false in <cite>l2cu_allocate_ccb</cite>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">config_done</span></code></p>
+<p>Configuration flag word. used during l2cap  configuration  exchannge.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define IB_CFG_DONE 0x01</span>
+<span class="cp">#define OB_CFG_DONE 0x02</span>
+<span class="cp">#define RECONFIG_FLAG 0x04 </span><span class="cm">/* True after initial configuration */</span><span class="cp"></span>
+<span class="cp">#define CFG_DONE_MASK (IB_CFG_DONE | OB_CFG_DONE)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">local_id</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">remote_id</span></code></p>
+<p>Transaction ID for identify connection request/response pair.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">flags</span></code></p>
+<p>use for tracking specific state during connection.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define CCB_FLAG_NO_RETRY 0x01     </span><span class="cm">/* no more retry */</span><span class="cp"></span>
+<span class="cp">#define CCB_FLAG_SENT_PENDING 0x02 </span><span class="cm">/* already sent pending response */</span><span class="cp"></span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">our_cfg</span></code></p>
+<p>Our saved configuration options</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_cfg_bits</span></code></p>
+<p>Store what peer wants to configure</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* L2CAP channel configured field bitmap */</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_MTU 0x0001</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_QOS 0x0002</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_FLUSH_TO 0x0004</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_FCR 0x0008</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_FCS 0x0010</span>
+<span class="cp">#define L2CAP_CH_CFG_MASK_EXT_FLOW_SPEC 0x0020</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_cfg</span></code></p>
+<p>Peer’s saved configuration options.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">xmit_hold_q</span></code></p>
+<p>pennding packets for transmitting.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">cong_sent</span></code></p>
+<p>Set when congested status sent</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">buff_quota</span></code></p>
+<p>Buffer quota before sending congestion.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ccb_priority</span></code></p>
+<p>channel priority <cite>l2cu_change_pri_ccb</cite>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Values for priority parameter to L2CA_SetTxPriority */</span>
+<span class="cp">#define L2CAP_CHNL_PRIORITY_HIGH 0</span>
+<span class="cp">#define L2CAP_CHNL_PRIORITY_MEDIUM 1</span>
+<span class="cp">#define L2CAP_CHNL_PRIORITY_LOW 2</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">tx_data_rate</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">rx_data_rate</span></code></p>
+<p>Channel Tx/RX data rate.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Values for Tx/Rx data rate parameter to L2CA_SetChnlDataRate */</span>
+<span class="cp">#define L2CAP_CHNL_DATA_RATE_HIGH 3</span>
+<span class="cp">#define L2CAP_CHNL_DATA_RATE_MEDIUM 2</span>
+<span class="cp">#define L2CAP_CHNL_DATA_RATE_LOW 1</span>
+<span class="cp">#define L2CAP_CHNL_DATA_RATE_NO_TRAFFIC 0</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ertm_info</span></code></p>
+<p>Fields used for eL2CAP.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the structure that applications use to create or accept</span>
+<span class="cm"> * connections with enhanced retransmission mode.</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">preferred_mode</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">allowed_modes</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">user_rx_buf_size</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">user_tx_buf_size</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">fcr_rx_buf_size</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">fcr_tx_buf_size</span><span class="p">;</span>
+
+<span class="p">}</span> <span class="n">tL2CAP_ERTM_INFO</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fcrb</span></code></p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">next_tx_seq</span><span class="p">;</span>       <span class="cm">/* Next sequence number to be Tx&#39;ed */</span>
+  <span class="kt">uint8_t</span> <span class="n">last_rx_ack</span><span class="p">;</span>       <span class="cm">/* Last sequence number ack&#39;ed by the peer */</span>
+  <span class="kt">uint8_t</span> <span class="n">next_seq_expected</span><span class="p">;</span> <span class="cm">/* Next peer sequence number expected */</span>
+  <span class="kt">uint8_t</span> <span class="n">last_ack_sent</span><span class="p">;</span>     <span class="cm">/* Last peer sequence number ack&#39;ed */</span>
+  <span class="kt">uint8_t</span> <span class="n">num_tries</span><span class="p">;</span>         <span class="cm">/* Number of retries to send a packet */</span>
+  <span class="kt">uint8_t</span> <span class="n">max_held_acks</span><span class="p">;</span>     <span class="cm">/* Max acks we can hold before sending */</span>
+
+  <span class="kt">bool</span> <span class="n">remote_busy</span><span class="p">;</span> <span class="cm">/* true if peer has flowed us off */</span>
+  <span class="kt">bool</span> <span class="n">local_busy</span><span class="p">;</span>  <span class="cm">/* true if we have flowed off the peer */</span>
+
+  <span class="kt">bool</span> <span class="n">rej_sent</span><span class="p">;</span>       <span class="cm">/* Reject was sent */</span>
+  <span class="kt">bool</span> <span class="n">srej_sent</span><span class="p">;</span>      <span class="cm">/* Selective Reject was sent */</span>
+  <span class="kt">bool</span> <span class="n">wait_ack</span><span class="p">;</span>       <span class="cm">/* Transmitter is waiting ack (poll sent) */</span>
+  <span class="kt">bool</span> <span class="n">rej_after_srej</span><span class="p">;</span> <span class="cm">/* Send a REJ when SREJ clears */</span>
+
+  <span class="kt">bool</span> <span class="n">send_f_rsp</span><span class="p">;</span> <span class="cm">/* We need to send an F-bit response */</span>
+
+  <span class="kt">uint16_t</span> <span class="n">rx_sdu_len</span><span class="p">;</span> <span class="cm">/* Length of the SDU being received */</span>
+  <span class="n">BT_HDR</span><span class="o">*</span> <span class="n">p_rx_sdu</span><span class="p">;</span>    <span class="cm">/* Buffer holding the SDU being received */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span>
+      <span class="n">waiting_for_ack_q</span><span class="p">;</span>          <span class="cm">/* Buffers sent and waiting for peer to ack */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span> <span class="n">srej_rcv_hold_q</span><span class="p">;</span> <span class="cm">/* Buffers rcvd but held pending SREJ rsp */</span>
+  <span class="n">fixed_queue_t</span><span class="o">*</span> <span class="n">retrans_q</span><span class="p">;</span>       <span class="cm">/* Buffers being retransmitted */</span>
+
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">ack_timer</span><span class="p">;</span>         <span class="cm">/* Timer delaying RR */</span>
+  <span class="n">alarm_t</span><span class="o">*</span> <span class="n">mon_retrans_timer</span><span class="p">;</span> <span class="cm">/* Timer Monitor or Retransmission */</span>
+
+<span class="cp">#if (L2CAP_ERTM_STATS == TRUE)</span>
+  <span class="kt">uint32_t</span> <span class="n">connect_tick_count</span><span class="p">;</span>  <span class="cm">/* Time channel was established */</span>
+  <span class="kt">uint32_t</span> <span class="n">ertm_pkt_counts</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>  <span class="cm">/* Packets sent and received */</span>
+  <span class="kt">uint32_t</span> <span class="n">ertm_byte_counts</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="cm">/* Bytes   sent and received */</span>
+  <span class="kt">uint32_t</span> <span class="n">s_frames_sent</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>    <span class="cm">/* S-frames sent (RR, REJ, RNR, SREJ) */</span>
+  <span class="kt">uint32_t</span> <span class="n">s_frames_rcvd</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>    <span class="cm">/* S-frames rcvd (RR, REJ, RNR, SREJ) */</span>
+  <span class="kt">uint32_t</span> <span class="n">xmit_window_closed</span><span class="p">;</span>  <span class="cm">/* # of times the xmit window was closed */</span>
+  <span class="kt">uint32_t</span> <span class="n">controller_idle</span><span class="p">;</span> <span class="cm">/* # of times less than 2 packets in controller */</span>
+                            <span class="cm">/* when the xmit window was closed */</span>
+  <span class="kt">uint32_t</span> <span class="n">pkts_retransmitted</span><span class="p">;</span> <span class="cm">/* # of packets that were retransmitted */</span>
+  <span class="kt">uint32_t</span> <span class="n">retrans_touts</span><span class="p">;</span>      <span class="cm">/* # of retransmission timouts */</span>
+  <span class="kt">uint32_t</span> <span class="n">xmit_ack_touts</span><span class="p">;</span>     <span class="cm">/* # of xmit ack timouts */</span>
+
+<span class="cp">#define L2CAP_ERTM_STATS_NUM_AVG 10</span>
+<span class="cp">#define L2CAP_ERTM_STATS_AVG_NUM_SAMPLES 100</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_delay_avg_count</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_delay_avg_index</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">throughput_start</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">throughput</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_delay_avg</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_delay_min</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_delay_max</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_q_count_avg</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_q_count_min</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_q_count_max</span><span class="p">[</span><span class="n">L2CAP_ERTM_STATS_NUM_AVG</span><span class="p">];</span>
+<span class="cp">#endif</span>
+<span class="p">}</span> <span class="n">tL2C_FCRB</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">tx_mps</span></code></p>
+<p>TX MPS(Max Payload Size) adjusted based on current controller.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">max_rx_mtu</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fcr_cfg_tries</span></code></p>
+<p>Max number of negotiation attempts.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">peer_cfg_already_rejected</span></code></p>
+<p>If mode rejected once, set to true.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">out_cfg_fcr_present</span></code></p>
+<p>true if cfg response should include fcr options.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">bypass_fcs</span></code></p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define L2CAP_CFG_FCS_OUR 0x01  </span><span class="cm">/* Our desired config FCS option */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_CFG_FCS_PEER 0x02 </span><span class="cm">/* Peer&#39;s desired config FCS option */</span><span class="cp"></span>
+<span class="cp">#define L2CAP_BYPASS_FCS (L2CAP_CFG_FCS_OUR | L2CAP_CFG_FCS_PEER)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">is_flushable</span></code></p>
+<p>true if channel is flushable.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">fixed_chnl_idle_tout</span></code></p>
+<p>Idle timeout to use for the fixed channel.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">tx_data_len</span></code></p>
+<p>TX data length.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="tl2c-rcb">
+<h2>tl2c_RCB<a class="headerlink" href="#tl2c-rcb" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>define a registration control block. Every application (e.g. RFCOMM, SDP,</dt>
+<dd>TCS etc) that registers with L2CAP is assigned one of these.</dd>
+</dl>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">in_use</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">psm</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">real_psm</span><span class="p">;</span> <span class="cm">/* This may be a dummy RCB for an o/b connection but */</span>
+                       <span class="cm">/* this is the real PSM that we need to connect to */</span>
+  <span class="cp">#if (L2CAP_UCD_INCLUDED == TRUE)</span>
+    <span class="n">tL2C_UCD_REG</span> <span class="n">ucd</span><span class="p">;</span>
+  <span class="cp">#endif</span>
+
+    <span class="n">tL2CAP_APPL_INFO</span> <span class="n">api</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">tL2C_RCB</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">in_use</span></code></p>
+<p>allocated to the app or  not.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">psm</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">real_psm</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ucd</span></code></p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define L2C_UCD_RCB_ID 0x00</span>
+<span class="cp">#define L2C_UCD_STATE_UNUSED 0x00</span>
+<span class="cp">#define L2C_UCD_STATE_W4_DATA 0x01</span>
+<span class="cp">#define L2C_UCD_STATE_W4_RECEPTION 0x02</span>
+<span class="cp">#define L2C_UCD_STATE_W4_MTU 0x04</span>
+
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">state</span><span class="p">;</span>
+  <span class="n">tL2CAP_UCD_CB_INFO</span> <span class="n">cb_info</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">tL2C_UCD_REG</span><span class="p">;</span>
+
+<span class="p">...</span>
+
+<span class="cm">/* UCD registration info (the callback addresses and PSM)</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">tL2CA_UCD_DISCOVER_CB</span><span class="o">*</span> <span class="n">pL2CA_UCD_Discover_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_UCD_DATA_CB</span><span class="o">*</span> <span class="n">pL2CA_UCD_Data_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_UCD_CONGESTION_STATUS_CB</span><span class="o">*</span> <span class="n">pL2CA_UCD_Congestion_Status_Cb</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">tL2CAP_UCD_CB_INFO</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">api</span></code></p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Define the structure that applications use to register with</span>
+<span class="cm"> * L2CAP. This structure includes callback functions. All functions</span>
+<span class="cm"> * MUST be provided, with the exception of the &quot;connect pending&quot;</span>
+<span class="cm"> * callback and &quot;congestion status&quot; callback.</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">tL2CA_CONNECT_IND_CB</span><span class="o">*</span> <span class="n">pL2CA_ConnectInd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_CONNECT_CFM_CB</span><span class="o">*</span> <span class="n">pL2CA_ConnectCfm_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_CONNECT_PND_CB</span><span class="o">*</span> <span class="n">pL2CA_ConnectPnd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_CONFIG_IND_CB</span><span class="o">*</span> <span class="n">pL2CA_ConfigInd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_CONFIG_CFM_CB</span><span class="o">*</span> <span class="n">pL2CA_ConfigCfm_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_DISCONNECT_IND_CB</span><span class="o">*</span> <span class="n">pL2CA_DisconnectInd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_DISCONNECT_CFM_CB</span><span class="o">*</span> <span class="n">pL2CA_DisconnectCfm_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_QOS_VIOLATION_IND_CB</span><span class="o">*</span> <span class="n">pL2CA_QoSViolationInd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_DATA_IND_CB</span><span class="o">*</span> <span class="n">pL2CA_DataInd_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_CONGESTION_STATUS_CB</span><span class="o">*</span> <span class="n">pL2CA_CongestionStatus_Cb</span><span class="p">;</span>
+  <span class="n">tL2CA_TX_COMPLETE_CB</span><span class="o">*</span> <span class="n">pL2CA_TxComplete_Cb</span><span class="p">;</span>
+
+<span class="p">}</span> <span class="n">tL2CAP_APPL_INFO</span><span class="p">;</span>
+</pre></div>
+</div>
 </li>
 </ul>
 </div>

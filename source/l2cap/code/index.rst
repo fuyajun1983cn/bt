@@ -5,3 +5,4 @@ Code Architecture Analysis
 
     data-structure.rst
     api.rst
+    csm.rst

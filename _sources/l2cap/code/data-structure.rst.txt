@@ -548,3 +548,482 @@ tL2C_LCB
   refer to https://blog.csdn.net/Wendell_Gong/article/details/54956499.
 
 
+tL2C_CCB
+========
+
+.. code-block:: c++
+
+   /* Define a channel control block (CCB). There may be many channel control
+   * blocks between the same two Bluetooth devices (i.e. on the same link).
+   * Each CCB has unique local and remote CIDs. All channel control blocks on
+   * the same physical link and are chained together.
+   */
+  typedef struct t_l2c_ccb {
+    bool in_use;                /* true when in use, false when not */
+    tL2C_CHNL_STATE chnl_state; /* Channel state */
+    tL2CAP_LE_CFG_INFO
+        local_conn_cfg; /* Our config for ble conn oriented channel */
+    tL2CAP_LE_CFG_INFO
+        peer_conn_cfg;       /* Peer device config ble conn oriented channel */
+    bool is_first_seg;       /* Dtermine whether the received packet is the first
+                                segment or not */
+    BT_HDR* ble_sdu;         /* Buffer for storing unassembled sdu*/
+    uint16_t ble_sdu_length; /* Length of unassembled sdu length*/
+    struct t_l2c_ccb* p_next_ccb; /* Next CCB in the chain */
+    struct t_l2c_ccb* p_prev_ccb; /* Previous CCB in the chain */
+    struct t_l2c_linkcb* p_lcb;   /* Link this CCB is assigned to */
+  
+    uint16_t local_cid;  /* Local CID */
+    uint16_t remote_cid; /* Remote CID */
+  
+    alarm_t* l2c_ccb_timer; /* CCB Timer Entry */
+  
+    tL2C_RCB* p_rcb;      /* Registration CB for this Channel */
+    bool should_free_rcb; /* True if RCB was allocated on the heap */
+  
+  #define IB_CFG_DONE 0x01
+  #define OB_CFG_DONE 0x02
+  #define RECONFIG_FLAG 0x04 /* True after initial configuration */
+  #define CFG_DONE_MASK (IB_CFG_DONE | OB_CFG_DONE)
+  
+    uint8_t config_done; /* Configuration flag word */
+    uint8_t local_id;    /* Transaction ID for local trans */
+    uint8_t remote_id;   /* Transaction ID for local */
+  
+  #define CCB_FLAG_NO_RETRY 0x01     /* no more retry */
+  #define CCB_FLAG_SENT_PENDING 0x02 /* already sent pending response */
+    uint8_t flags;
+  
+    tL2CAP_CFG_INFO our_cfg;          /* Our saved configuration options */
+    tL2CAP_CH_CFG_BITS peer_cfg_bits; /* Store what peer wants to configure */
+    tL2CAP_CFG_INFO peer_cfg;         /* Peer's saved configuration options */
+  
+    fixed_queue_t* xmit_hold_q; /* Transmit data hold queue */
+    bool cong_sent;             /* Set when congested status sent */
+    uint16_t buff_quota;        /* Buffer quota before sending congestion */
+  
+    tL2CAP_CHNL_PRIORITY ccb_priority;  /* Channel priority */
+    tL2CAP_CHNL_DATA_RATE tx_data_rate; /* Channel Tx data rate */
+    tL2CAP_CHNL_DATA_RATE rx_data_rate; /* Channel Rx data rate */
+  
+    /* Fields used for eL2CAP */
+    tL2CAP_ERTM_INFO ertm_info;
+    tL2C_FCRB fcrb;
+    uint16_t tx_mps; /* TX MPS adjusted based on current controller */
+    uint16_t max_rx_mtu;
+    uint8_t fcr_cfg_tries;          /* Max number of negotiation attempts */
+    bool peer_cfg_already_rejected; /* If mode rejected once, set to true */
+    bool out_cfg_fcr_present; /* true if cfg response shoulkd include fcr options
+                                 */
+  
+  #define L2CAP_CFG_FCS_OUR 0x01  /* Our desired config FCS option */
+  #define L2CAP_CFG_FCS_PEER 0x02 /* Peer's desired config FCS option */
+  #define L2CAP_BYPASS_FCS (L2CAP_CFG_FCS_OUR | L2CAP_CFG_FCS_PEER)
+    uint8_t bypass_fcs;
+  
+  #if (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE)
+    bool is_flushable; /* true if channel is flushable */
+  #endif
+  
+  #if (L2CAP_NUM_FIXED_CHNLS > 0 || L2CAP_UCD_INCLUDED == TRUE)
+    uint16_t fixed_chnl_idle_tout; /* Idle timeout to use for the fixed channel */
+  #endif
+    uint16_t tx_data_len;
+  } tL2C_CCB;
+
+
+- ``in_use``
+
+  test if the channel was used or  not currently.
+
+- ``chnl_state``
+
+  Chhannel State:
+
+  .. code-block:: c++
+
+     /* Define the possible L2CAP channel states. The names of
+      * the states may seem a bit strange, but they are taken from
+      * the Bluetooth specification.
+     */
+     typedef enum {
+       CST_CLOSED,                  /* Channel is in closed state */
+       CST_ORIG_W4_SEC_COMP,        /* Originator waits security clearence */
+       CST_TERM_W4_SEC_COMP,        /* Acceptor waits security clearence */
+       CST_W4_L2CAP_CONNECT_RSP,    /* Waiting for peer conenct response */
+       CST_W4_L2CA_CONNECT_RSP,     /* Waiting for upper layer connect rsp */
+       CST_CONFIG,                  /* Negotiating configuration */
+       CST_OPEN,                    /* Data transfer state */
+       CST_W4_L2CAP_DISCONNECT_RSP, /* Waiting for peer disconnect rsp */
+       CST_W4_L2CA_DISCONNECT_RSP   /* Waiting for upper layer disc rsp */
+     } tL2C_CHNL_STATE;
+
+
+- ``local_conn_cfg``
+- ``peer_conn_cfg``
+
+  our and peer configuration for BLE Oriented Channel
+
+  .. code-block:: c++
+
+     /* Define a structure to hold the configuration parameter for LE L2CAP
+      * connection oriented channels.
+      */
+     typedef struct {
+       uint16_t mtu;
+       uint16_t mps;
+       uint16_t credits;
+     } tL2CAP_LE_CFG_INFO;
+
+- ``is_first_seg``
+
+  Dtermine whether the received packet is the first segment or not.
+
+- ``ble_sdu``
+
+  Buffer for storing unassembled sdu
+
+- ``ble_sdu_length``
+
+  Length of unassembled sdu length
+
+- ``p_next_ccb``
+- ``p_prev_ccb``
+
+  main the chain of the CCB.
+
+  .. code-block:: c++
+
+     /* For all channels, send the event through their FSMs */
+    for (p_ccb = p_lcb->ccb_queue.p_first_ccb; p_ccb;
+         p_ccb = p_ccb->p_next_ccb) {
+      if (p_ccb->chnl_state == CST_CLOSED)
+        l2c_csm_execute(p_ccb, L2CEVT_LP_CONNECT_CFM, NULL);
+    }
+
+- ``p_lcb``
+
+  Link this CCB is assigned to
+
+- ``local_cid``
+- ``remote_cid``
+
+  local and remote CID determined an App link between two devices.
+
+- ``l2c_ccb_timer``
+
+  timer for state transition on a bluetooth channel.
+
+  .. code-block:: c++
+
+     p_ccb->l2c_ccb_timer = alarm_new("l2c.l2c_ccb_timer");
+
+     alarm_set_on_mloop(p_lcb->l2c_lcb_timer,
+                  L2CAP_LINK_ROLE_SWITCH_TIMEOUT_MS,
+                  l2c_lcb_timer_timeout, p_lcb);
+
+     /*
+      * Timeout values (in milliseconds).
+      */
+     #define L2CAP_LINK_ROLE_SWITCH_TIMEOUT_MS (10 * 1000)  /* 10 seconds */
+     #define L2CAP_LINK_CONNECT_TIMEOUT_MS (20 * 1000)      /* 20 seconds */
+     #define L2CAP_LINK_CONNECT_EXT_TIMEOUT_MS (120 * 1000) /* 120 seconds */
+     #define L2CAP_ECHO_RSP_TIMEOUT_MS (30 * 1000)          /* 30 seconds */
+     #define L2CAP_LINK_FLOW_CONTROL_TIMEOUT_MS (2 * 1000)  /* 2 seconds */
+     #define L2CAP_LINK_DISCONNECT_TIMEOUT_MS (30 * 1000)   /* 30 seconds */
+     #define L2CAP_CHNL_CONNECT_TIMEOUT_MS (20 * 1000)      /* 20 seconds */
+     #define L2CAP_CHNL_CONNECT_EXT_TIMEOUT_MS (120 * 1000) /* 120 seconds */
+     #define L2CAP_CHNL_CFG_TIMEOUT_MS (30 * 1000)          /* 30 seconds */
+     #define L2CAP_CHNL_DISCONNECT_TIMEOUT_MS (10 * 1000)   /* 10 seconds */
+     #define L2CAP_DELAY_CHECK_SM4_TIMEOUT_MS (2 * 1000)    /* 2 seconds */
+     #define L2CAP_WAIT_INFO_RSP_TIMEOUT_MS (3 * 1000)      /* 3 seconds */
+     #define L2CAP_BLE_LINK_CONNECT_TIMEOUT_MS (30 * 1000)  /* 30 seconds */
+     #define L2CAP_FCR_ACK_TIMEOUT_MS 200                   /* 200 milliseconds */
+
+- ``p_rcb``
+
+  Registration CB for this Channel.
+
+- ``should_free_rcb``
+
+  True if RCB was allocated on the heap.
+
+  set to false in `l2cu_allocate_ccb`.
+
+- ``config_done``
+
+  Configuration flag word. used during l2cap  configuration  exchannge.
+
+  .. code-block:: c++
+
+     #define IB_CFG_DONE 0x01
+     #define OB_CFG_DONE 0x02
+     #define RECONFIG_FLAG 0x04 /* True after initial configuration */
+     #define CFG_DONE_MASK (IB_CFG_DONE | OB_CFG_DONE)
+
+- ``local_id``
+- ``remote_id``
+
+  Transaction ID for identify connection request/response pair.
+
+- ``flags``
+
+  use for tracking specific state during connection.
+
+  .. code-block:: c++
+
+     #define CCB_FLAG_NO_RETRY 0x01     /* no more retry */
+     #define CCB_FLAG_SENT_PENDING 0x02 /* already sent pending response */
+
+- ``our_cfg``
+
+  Our saved configuration options
+
+- ``peer_cfg_bits``
+
+  Store what peer wants to configure
+
+  .. code-block:: c++
+
+     /* L2CAP channel configured field bitmap */
+     #define L2CAP_CH_CFG_MASK_MTU 0x0001
+     #define L2CAP_CH_CFG_MASK_QOS 0x0002
+     #define L2CAP_CH_CFG_MASK_FLUSH_TO 0x0004
+     #define L2CAP_CH_CFG_MASK_FCR 0x0008
+     #define L2CAP_CH_CFG_MASK_FCS 0x0010
+     #define L2CAP_CH_CFG_MASK_EXT_FLOW_SPEC 0x0020
+
+- ``peer_cfg``
+
+  Peer's saved configuration options.
+
+- ``xmit_hold_q``
+
+  pennding packets for transmitting.
+
+- ``cong_sent``
+
+  Set when congested status sent
+
+- ``buff_quota``
+
+  Buffer quota before sending congestion.
+
+- ``ccb_priority``
+
+  channel priority `l2cu_change_pri_ccb`.
+
+  .. code-block:: c++
+
+     /* Values for priority parameter to L2CA_SetTxPriority */
+     #define L2CAP_CHNL_PRIORITY_HIGH 0
+     #define L2CAP_CHNL_PRIORITY_MEDIUM 1
+     #define L2CAP_CHNL_PRIORITY_LOW 2
+
+- ``tx_data_rate``
+- ``rx_data_rate``
+
+  Channel Tx/RX data rate.
+
+  .. code-block:: c++
+
+     /* Values for Tx/Rx data rate parameter to L2CA_SetChnlDataRate */
+     #define L2CAP_CHNL_DATA_RATE_HIGH 3
+     #define L2CAP_CHNL_DATA_RATE_MEDIUM 2
+     #define L2CAP_CHNL_DATA_RATE_LOW 1
+     #define L2CAP_CHNL_DATA_RATE_NO_TRAFFIC 0
+
+- ``ertm_info``
+
+  Fields used for eL2CAP.
+
+  .. code-block:: c++
+
+     /* Define the structure that applications use to create or accept
+      * connections with enhanced retransmission mode.
+      */
+     typedef struct {
+       uint8_t preferred_mode;
+       uint8_t allowed_modes;
+       uint16_t user_rx_buf_size;
+       uint16_t user_tx_buf_size;
+       uint16_t fcr_rx_buf_size;
+       uint16_t fcr_tx_buf_size;
+     
+     } tL2CAP_ERTM_INFO;
+
+- ``fcrb``
+
+  .. code-block:: c++
+
+     typedef struct {
+       uint8_t next_tx_seq;       /* Next sequence number to be Tx'ed */
+       uint8_t last_rx_ack;       /* Last sequence number ack'ed by the peer */
+       uint8_t next_seq_expected; /* Next peer sequence number expected */
+       uint8_t last_ack_sent;     /* Last peer sequence number ack'ed */
+       uint8_t num_tries;         /* Number of retries to send a packet */
+       uint8_t max_held_acks;     /* Max acks we can hold before sending */
+     
+       bool remote_busy; /* true if peer has flowed us off */
+       bool local_busy;  /* true if we have flowed off the peer */
+     
+       bool rej_sent;       /* Reject was sent */
+       bool srej_sent;      /* Selective Reject was sent */
+       bool wait_ack;       /* Transmitter is waiting ack (poll sent) */
+       bool rej_after_srej; /* Send a REJ when SREJ clears */
+     
+       bool send_f_rsp; /* We need to send an F-bit response */
+     
+       uint16_t rx_sdu_len; /* Length of the SDU being received */
+       BT_HDR* p_rx_sdu;    /* Buffer holding the SDU being received */
+       fixed_queue_t*
+           waiting_for_ack_q;          /* Buffers sent and waiting for peer to ack */
+       fixed_queue_t* srej_rcv_hold_q; /* Buffers rcvd but held pending SREJ rsp */
+       fixed_queue_t* retrans_q;       /* Buffers being retransmitted */
+     
+       alarm_t* ack_timer;         /* Timer delaying RR */
+       alarm_t* mon_retrans_timer; /* Timer Monitor or Retransmission */
+     
+     #if (L2CAP_ERTM_STATS == TRUE)
+       uint32_t connect_tick_count;  /* Time channel was established */
+       uint32_t ertm_pkt_counts[2];  /* Packets sent and received */
+       uint32_t ertm_byte_counts[2]; /* Bytes   sent and received */
+       uint32_t s_frames_sent[4];    /* S-frames sent (RR, REJ, RNR, SREJ) */
+       uint32_t s_frames_rcvd[4];    /* S-frames rcvd (RR, REJ, RNR, SREJ) */
+       uint32_t xmit_window_closed;  /* # of times the xmit window was closed */
+       uint32_t controller_idle; /* # of times less than 2 packets in controller */
+                                 /* when the xmit window was closed */
+       uint32_t pkts_retransmitted; /* # of packets that were retransmitted */
+       uint32_t retrans_touts;      /* # of retransmission timouts */
+       uint32_t xmit_ack_touts;     /* # of xmit ack timouts */
+     
+     #define L2CAP_ERTM_STATS_NUM_AVG 10
+     #define L2CAP_ERTM_STATS_AVG_NUM_SAMPLES 100
+       uint32_t ack_delay_avg_count;
+       uint32_t ack_delay_avg_index;
+       uint32_t throughput_start;
+       uint32_t throughput[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_delay_avg[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_delay_min[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_delay_max[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_q_count_avg[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_q_count_min[L2CAP_ERTM_STATS_NUM_AVG];
+       uint32_t ack_q_count_max[L2CAP_ERTM_STATS_NUM_AVG];
+     #endif
+     } tL2C_FCRB;
+
+- ``tx_mps``
+
+  TX MPS(Max Payload Size) adjusted based on current controller.
+
+- ``max_rx_mtu``
+
+- ``fcr_cfg_tries``
+
+  Max number of negotiation attempts.
+
+- ``peer_cfg_already_rejected``
+
+  If mode rejected once, set to true.
+
+- ``out_cfg_fcr_present``
+
+  true if cfg response should include fcr options.
+
+- ``bypass_fcs``
+
+  .. code-block:: c++
+
+     #define L2CAP_CFG_FCS_OUR 0x01  /* Our desired config FCS option */
+     #define L2CAP_CFG_FCS_PEER 0x02 /* Peer's desired config FCS option */
+     #define L2CAP_BYPASS_FCS (L2CAP_CFG_FCS_OUR | L2CAP_CFG_FCS_PEER)
+
+- ``is_flushable``
+
+  true if channel is flushable.
+
+- ``fixed_chnl_idle_tout``
+
+  Idle timeout to use for the fixed channel.
+
+- ``tx_data_len``
+
+  TX data length. 
+
+tl2c_RCB
+========
+
+define a registration control block. Every application (e.g. RFCOMM, SDP,
+ TCS etc) that registers with L2CAP is assigned one of these.
+
+.. code-block:: c++
+
+   typedef struct {
+       bool in_use;
+       uint16_t psm;
+       uint16_t real_psm; /* This may be a dummy RCB for an o/b connection but */
+                          /* this is the real PSM that we need to connect to */
+     #if (L2CAP_UCD_INCLUDED == TRUE)
+       tL2C_UCD_REG ucd;
+     #endif
+     
+       tL2CAP_APPL_INFO api;
+     } tL2C_RCB;
+
+- ``in_use``
+
+  allocated to the app or  not.
+
+- ``psm``
+- ``real_psm``
+
+
+- ``ucd``
+
+  .. code-block:: c++
+
+     #define L2C_UCD_RCB_ID 0x00
+     #define L2C_UCD_STATE_UNUSED 0x00
+     #define L2C_UCD_STATE_W4_DATA 0x01
+     #define L2C_UCD_STATE_W4_RECEPTION 0x02
+     #define L2C_UCD_STATE_W4_MTU 0x04
+     
+     typedef struct {
+       uint8_t state;
+       tL2CAP_UCD_CB_INFO cb_info;
+     } tL2C_UCD_REG;
+
+     ...
+
+     /* UCD registration info (the callback addresses and PSM)
+      */
+     typedef struct {
+       tL2CA_UCD_DISCOVER_CB* pL2CA_UCD_Discover_Cb;
+       tL2CA_UCD_DATA_CB* pL2CA_UCD_Data_Cb;
+       tL2CA_UCD_CONGESTION_STATUS_CB* pL2CA_UCD_Congestion_Status_Cb;
+     } tL2CAP_UCD_CB_INFO;
+
+
+- ``api``
+
+  .. code-block:: c++
+
+     /* Define the structure that applications use to register with
+      * L2CAP. This structure includes callback functions. All functions
+      * MUST be provided, with the exception of the "connect pending"
+      * callback and "congestion status" callback.
+      */
+     typedef struct {
+       tL2CA_CONNECT_IND_CB* pL2CA_ConnectInd_Cb;
+       tL2CA_CONNECT_CFM_CB* pL2CA_ConnectCfm_Cb;
+       tL2CA_CONNECT_PND_CB* pL2CA_ConnectPnd_Cb;
+       tL2CA_CONFIG_IND_CB* pL2CA_ConfigInd_Cb;
+       tL2CA_CONFIG_CFM_CB* pL2CA_ConfigCfm_Cb;
+       tL2CA_DISCONNECT_IND_CB* pL2CA_DisconnectInd_Cb;
+       tL2CA_DISCONNECT_CFM_CB* pL2CA_DisconnectCfm_Cb;
+       tL2CA_QOS_VIOLATION_IND_CB* pL2CA_QoSViolationInd_Cb;
+       tL2CA_DATA_IND_CB* pL2CA_DataInd_Cb;
+       tL2CA_CONGESTION_STATUS_CB* pL2CA_CongestionStatus_Cb;
+       tL2CA_TX_COMPLETE_CB* pL2CA_TxComplete_Cb;
+     
+     } tL2CAP_APPL_INFO;
