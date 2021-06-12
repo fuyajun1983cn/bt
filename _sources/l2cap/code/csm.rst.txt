@@ -69,3 +69,40 @@ Channel Statemachine handler
 ============================
 
 .. image:: ./images/2018082301.png
+
+
+L2cap Link Statemachine
+=======================
+
+possible link state:
+
+.. code-block:: c++
+
+   /* Define the possible L2CAP link states
+   */
+   typedef enum {
+     LST_DISCONNECTED,
+     LST_CONNECT_HOLDING,
+     LST_CONNECTING_WAIT_SWITCH,
+     LST_CONNECTING,
+     LST_CONNECTED,
+     LST_DISCONNECTING
+   } tL2C_LINK_STATE;
+
+
+timeout value:
+
+.. code-block:: c++
+
+   /*
+    * Timeout values (in milliseconds).
+    */
+   #define L2CAP_LINK_ROLE_SWITCH_TIMEOUT_MS (10 * 1000)  /* 10 seconds */
+   #define L2CAP_LINK_CONNECT_TIMEOUT_MS (20 * 1000)      /* 20 seconds */
+   #define L2CAP_LINK_CONNECT_EXT_TIMEOUT_MS (120 * 1000) /* 120 seconds */
+   #define L2CAP_ECHO_RSP_TIMEOUT_MS (30 * 1000)          /* 30 seconds */
+   #define L2CAP_LINK_FLOW_CONTROL_TIMEOUT_MS (2 * 1000)  /* 2 seconds */
+   #define L2CAP_LINK_DISCONNECT_TIMEOUT_MS (30 * 1000)   /* 30 seconds */                
+
+   
+l2cap link will report l2cap events to the l2cap statemachine. 

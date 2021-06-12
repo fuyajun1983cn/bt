@@ -20,7 +20,7 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'bluetooth'
+project = u'个人知识库'
 copyright = '2018, Jackson Fu'
 author = 'Jackson Fu'
 

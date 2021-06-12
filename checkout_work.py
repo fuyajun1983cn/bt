@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     parser = OptionParser()
     parser.add_option("-p", "--pull", action="store_true", dest="sync", help="Sync code from github", default=False)
-    parser.add_option("-s", "--submit", action="store_false", dest="sync", help="submit code from github", default=True)
+    parser.add_option("-s", "--submit", action="store_false", dest="sync", help="submit code to github", default=True)
     (options, args) = parser.parse_args()
     if options.sync == True:
         git_pull()
